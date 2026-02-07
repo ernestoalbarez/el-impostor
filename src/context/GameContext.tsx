@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { GameMode, Player, Theme, GameState, RoleType, DEFAULT_THEMES } from '@/types/game';
+import { GameMode, Player, Theme, GameState, RoleType } from '@/types/game';
+import defaultThemes from '@/data/themes.json';
 
 interface GameContextType {
   gameState: GameState | null;
@@ -26,7 +27,7 @@ export const useGame = () => {
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [themes, setThemes] = useState<Theme[]>(DEFAULT_THEMES);
+  const [themes, setThemes] = useState<Theme[]>(defaultThemes as Theme[]);
 
   const assignRoles = useCallback((
     players: string[],

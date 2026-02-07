@@ -1,0 +1,58 @@
+[
+  {
+    "id": "1",
+    "nombre": "Objetos de cocina",
+    "palabra_principal": "cuchara",
+    "variaciones_civil": ["cuchara", "cuchara sopera", "cucharita"],
+    "palabras_relacionadas": ["tenedor", "cucharón", "espátula", "cuchillo"]
+  },
+  {
+    "id": "2",
+    "nombre": "Animales domésticos",
+    "palabra_principal": "perro",
+    "variaciones_civil": ["perro", "cachorro", "can"],
+    "palabras_relacionadas": ["gato", "lobo", "zorro", "coyote"]
+  },
+  {
+    "id": "3",
+    "nombre": "Deportes",
+    "palabra_principal": "fútbol",
+    "variaciones_civil": ["fútbol", "soccer", "balompié"],
+    "palabras_relacionadas": ["rugby", "basketball", "handball", "hockey"]
+  },
+  {
+    "id": "4",
+    "nombre": "Frutas",
+    "palabra_principal": "manzana",
+    "variaciones_civil": ["manzana", "manzana roja", "manzana verde"],
+    "palabras_relacionadas": ["pera", "durazno", "ciruela", "membrillo"]
+  },
+  {
+    "id": "5",
+    "nombre": "Profesiones",
+    "palabra_principal": "médico",
+    "variaciones_civil": ["médico", "doctor", "doctora"],
+    "palabras_relacionadas": ["enfermero", "veterinario", "paramédico", "cirujano"]
+  },
+  {
+    "id": "6",
+    "nombre": "Lugares",
+    "palabra_principal": "playa",
+    "variaciones_civil": ["playa", "costa", "orilla del mar"],
+    "palabras_relacionadas": ["piscina", "lago", "río", "desierto"]
+  },
+  {
+    "id": "7",
+    "nombre": "Instrumentos musicales",
+    "palabra_principal": "guitarra",
+    "variaciones_civil": ["guitarra", "guitarra eléctrica", "guitarra acústica"],
+    "palabras_relacionadas": ["bajo", "ukulele", "banjo", "mandolina"]
+  },
+  {
+    "id": "8",
+    "nombre": "Medios de transporte",
+    "palabra_principal": "avión",
+    "variaciones_civil": ["avión", "aeroplano", "aeronave"],
+    "palabras_relacionadas": ["helicóptero", "cohete", "globo aerostático", "dron"]
+  }
+]
