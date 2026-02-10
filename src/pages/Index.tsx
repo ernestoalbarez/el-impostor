@@ -132,14 +132,28 @@ const GameApp = () => {
     resetGame();
     setGameEnded(null);
     setEliminationResult(null);
+    // Keep players and mode, go to config
+    setStep('config');
+    setSelectedThemes([...themes]);
+  };
+
+  const handleGoHome = () => {
+    resetGame();
+    setGameEnded(null);
+    setEliminationResult(null);
     setStep('mode');
     setSelectedMode(null);
     setPlayers([]);
     setSelectedThemes([...themes]);
   };
 
-  const handleGoHome = () => {
-    handlePlayAgain();
+  const handleChangeMode = () => {
+    resetGame();
+    setGameEnded(null);
+    setEliminationResult(null);
+    // Keep players but allow mode change
+    setStep('mode');
+    setSelectedThemes([...themes]);
   };
 
   // Game End Screen
@@ -151,6 +165,7 @@ const GameApp = () => {
         mode={gameState.config.mode}
         onPlayAgain={handlePlayAgain}
         onGoHome={handleGoHome}
+        onChangeMode={handleChangeMode}
       />
     );
   }
