@@ -37,7 +37,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     requestedImpostors: number,
     selectedThemes: Theme[]
   ): { assignedPlayers: Player[]; actualImpostorCount: number } => {
-    // Pick a random theme from selected ones
     const theme = selectedThemes[Math.floor(Math.random() * selectedThemes.length)];
     const playerCount = players.length;
     let impostorCount: number;
@@ -47,19 +46,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (mode === 'classic') {
       impostorCount = Math.min(requestedImpostors, playerCount - 1);
     } else if (mode === 'chaos') {
-      impostorCount = Math.floor(Math.random() * playerCount);
+      impostorCount = Math.max(1, Math.floor(Math.random() * (playerCount - 1)) + 1);
+      impostorCount = Math.min(impostorCount, Math.floor(playerCount / 2));
     } else {
       // Extreme chaos
       impostorCount = Math.floor(Math.random() * playerCount);
       if (playerCount >= 4 && Math.random() > 0.5) {
-        falseImpostorCount = Math.floor(Math.random() * Math.min(2, playerCount - impostorCount - 1)) + 1;
+        const maxFalse = Math.max(0, playerCount - impostorCount - 1);
+        falseImpostorCount = maxFalse > 0 ? Math.floor(Math.random() * Math.min(2, maxFalse)) + 1 : 0;
       }
       if (impostorCount > 0 && Math.random() > 0.6) {
         impostorNoWordCount = Math.min(1, impostorCount);
       }
     }
 
-    // Create shuffled indices for role assignment
+    // Shuffle indices
     const indices = Array.from({ length: playerCount }, (_, i) => i);
     for (let i = indices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -74,42 +75,65 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     let assignedCount = 0;
 
-    // Assign impostors without word first
-    for (let i = 0; i < impostorNoWordCount && assignedCount < impostorCount; i++) {
-      const playerIndex = indices[assignedCount];
-      assignedPlayers[playerIndex].role = 'impostorNoWord';
-      assignedPlayers[playerIndex].word = undefined;
-      assignedCount++;
-    }
+    if (mode === 'classic' || mode === 'chaos') {
+      // CLASSIC & CHAOS: All civils see the SAME word, all impostors see the SAME related word
+      const civilWord = theme.variaciones_civil[Math.floor(Math.random() * theme.variaciones_civil.length)];
+      const impostorWord = theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)];
 
-    // Assign regular impostors
-    const regularImpostors = impostorCount - impostorNoWordCount;
-    for (let i = 0; i < regularImpostors; i++) {
-      const playerIndex = indices[assignedCount];
-      assignedPlayers[playerIndex].role = 'impostor';
-      assignedPlayers[playerIndex].word = theme.palabras_relacionadas[
-        Math.floor(Math.random() * theme.palabras_relacionadas.length)
-      ];
-      assignedCount++;
-    }
+      for (let i = 0; i < impostorCount; i++) {
+        const playerIndex = indices[assignedCount];
+        assignedPlayers[playerIndex].role = 'impostor';
+        assignedPlayers[playerIndex].word = impostorWord;
+        assignedCount++;
+      }
 
-    // Assign false impostors
-    for (let i = 0; i < falseImpostorCount; i++) {
-      const playerIndex = indices[assignedCount];
-      assignedPlayers[playerIndex].role = 'falseImpostor';
-      assignedPlayers[playerIndex].word = theme.palabras_relacionadas[
-        Math.floor(Math.random() * theme.palabras_relacionadas.length)
-      ];
-      assignedCount++;
-    }
+      for (let i = assignedCount; i < playerCount; i++) {
+        const playerIndex = indices[i];
+        assignedPlayers[playerIndex].role = 'civil';
+        assignedPlayers[playerIndex].word = civilWord;
+      }
+    } else {
+      // EXTREME CHAOS: Each player may get a different word
 
-    // Assign civilians
-    for (let i = assignedCount; i < playerCount; i++) {
-      const playerIndex = indices[i];
-      assignedPlayers[playerIndex].role = 'civil';
-      assignedPlayers[playerIndex].word = theme.variaciones_civil[
-        Math.floor(Math.random() * theme.variaciones_civil.length)
-      ];
+      // Impostors without word
+      for (let i = 0; i < impostorNoWordCount && assignedCount < impostorCount; i++) {
+        const playerIndex = indices[assignedCount];
+        assignedPlayers[playerIndex].role = 'impostorNoWord';
+        assignedPlayers[playerIndex].word = undefined;
+        assignedCount++;
+      }
+
+      // Regular impostors - may or may not get the same word
+      const impostorBaseWord = theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)];
+      const regularImpostors = impostorCount - impostorNoWordCount;
+      for (let i = 0; i < regularImpostors; i++) {
+        const playerIndex = indices[assignedCount];
+        assignedPlayers[playerIndex].role = 'impostor';
+        // 50% chance each impostor gets a different related word
+        assignedPlayers[playerIndex].word = Math.random() > 0.5
+          ? theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)]
+          : impostorBaseWord;
+        assignedCount++;
+      }
+
+      // False impostors
+      for (let i = 0; i < falseImpostorCount; i++) {
+        const playerIndex = indices[assignedCount];
+        assignedPlayers[playerIndex].role = 'falseImpostor';
+        assignedPlayers[playerIndex].word = theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)];
+        assignedCount++;
+      }
+
+      // Civilians - may or may not get the same variation
+      const civilBaseWord = theme.variaciones_civil[Math.floor(Math.random() * theme.variaciones_civil.length)];
+      for (let i = assignedCount; i < playerCount; i++) {
+        const playerIndex = indices[i];
+        assignedPlayers[playerIndex].role = 'civil';
+        // 50% chance each civil gets a different variation
+        assignedPlayers[playerIndex].word = Math.random() > 0.5
+          ? theme.variaciones_civil[Math.floor(Math.random() * theme.variaciones_civil.length)]
+          : civilBaseWord;
+      }
     }
 
     return { assignedPlayers, actualImpostorCount: impostorCount };

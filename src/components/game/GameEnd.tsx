@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Player, GameMode } from '@/types/game';
 import { cn } from '@/lib/utils';
-import { Trophy, RotateCcw, Home, Skull, Shield } from 'lucide-react';
+import { Trophy, RotateCcw, Home, Skull, Shield, Shuffle } from 'lucide-react';
 
 interface GameEndProps {
   players: Player[];
@@ -10,6 +10,7 @@ interface GameEndProps {
   mode: GameMode;
   onPlayAgain: () => void;
   onGoHome: () => void;
+  onChangeMode?: () => void;
 }
 
 const roleLabels: Record<string, string> = {
@@ -25,6 +26,7 @@ export const GameEnd = ({
   mode,
   onPlayAgain,
   onGoHome,
+  onChangeMode,
 }: GameEndProps) => {
   const impostors = players.filter(
     p => p.role === 'impostor' || p.role === 'impostorNoWord'
@@ -142,23 +144,34 @@ export const GameEnd = ({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4">
+        <div className="space-y-3">
+          <Button
+            onClick={onPlayAgain}
+            className="w-full btn-fire"
+            size="lg"
+          >
+            <RotateCcw className="w-5 h-5 mr-2" />
+            Jugar otra ronda
+          </Button>
+          {onChangeMode && (
+            <Button
+              onClick={onChangeMode}
+              variant="outline"
+              className="w-full"
+              size="lg"
+            >
+              <Shuffle className="w-5 h-5 mr-2" />
+              Cambiar modo de juego
+            </Button>
+          )}
           <Button
             onClick={onGoHome}
-            variant="outline"
-            className="flex-1"
+            variant="ghost"
+            className="w-full"
             size="lg"
           >
             <Home className="w-5 h-5 mr-2" />
             Inicio
-          </Button>
-          <Button
-            onClick={onPlayAgain}
-            className="flex-1 btn-fire"
-            size="lg"
-          >
-            <RotateCcw className="w-5 h-5 mr-2" />
-            Jugar de nuevo
           </Button>
         </div>
       </div>
