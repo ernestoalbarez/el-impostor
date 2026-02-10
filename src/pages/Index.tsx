@@ -22,7 +22,8 @@ const GameApp = () => {
     themes,
     setThemes,
     initializeGame,
-    revealNextPlayer,
+    revealPlayer,
+    revealedPlayerIds,
     startGame,
     eliminatePlayer,
     updateTimer,
@@ -35,7 +36,7 @@ const GameApp = () => {
   const [players, setPlayers] = useState<string[]>([]);
   const [impostorCount, setImpostorCount] = useState(1);
   const [timerMinutes, setTimerMinutes] = useState(5);
-  const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
+  const [selectedThemes, setSelectedThemes] = useState<Theme[]>(themes);
 
   const [eliminationResult, setEliminationResult] = useState<{
     player: any;
@@ -61,26 +62,39 @@ const GameApp = () => {
     setPlayers(players.filter((_, i) => i !== index));
   };
 
+  const handleToggleTheme = (theme: Theme) => {
+    setSelectedThemes(prev => {
+      const exists = prev.some(t => t.id === theme.id);
+      if (exists) {
+        return prev.filter(t => t.id !== theme.id);
+      }
+      return [...prev, theme];
+    });
+  };
+
+  const handleSelectAllThemes = () => {
+    setSelectedThemes([...themes]);
+  };
+
+  const handleDeselectAllThemes = () => {
+    setSelectedThemes([]);
+  };
+
   const handleAddTheme = (theme: Theme) => {
     setThemes([...themes, theme]);
+    setSelectedThemes(prev => [...prev, theme]);
   };
 
   const handleDeleteTheme = (themeId: string) => {
     setThemes(themes.filter(t => t.id !== themeId));
-    if (selectedTheme?.id === themeId) {
-      setSelectedTheme(null);
-    }
+    setSelectedThemes(prev => prev.filter(t => t.id !== themeId));
   };
 
   const handleStartSetup = () => {
-    if (selectedMode && selectedTheme && players.length >= 3) {
-      initializeGame(selectedMode, players, impostorCount, timerMinutes, selectedTheme);
+    if (selectedMode && selectedThemes.length > 0 && players.length >= 3) {
+      initializeGame(selectedMode, players, impostorCount, timerMinutes, selectedThemes);
       setStep('game');
     }
-  };
-
-  const handleNextReveal = () => {
-    revealNextPlayer();
   };
 
   const handleStartGame = () => {
@@ -121,7 +135,7 @@ const GameApp = () => {
     setStep('mode');
     setSelectedMode(null);
     setPlayers([]);
-    setSelectedTheme(null);
+    setSelectedThemes([...themes]);
   };
 
   const handleGoHome = () => {
@@ -157,14 +171,11 @@ const GameApp = () => {
   // Game Screen (Reveal or Playing)
   if (step === 'game' && gameState) {
     if (gameState.phase === 'reveal') {
-      const currentPlayer = gameState.config.players[gameState.currentPlayerIndex];
-      const isLast = gameState.currentPlayerIndex === gameState.config.players.length - 1;
-      
       return (
         <RoleReveal
-          player={currentPlayer}
-          isLast={isLast}
-          onNext={handleNextReveal}
+          players={gameState.config.players}
+          revealedPlayerIds={revealedPlayerIds}
+          onRevealPlayer={revealPlayer}
           onStartGame={handleStartGame}
         />
       );
@@ -378,8 +389,10 @@ const GameApp = () => {
             <div className="card-mystery rounded-2xl p-6">
               <ThemeManager
                 themes={themes}
-                selectedTheme={selectedTheme || undefined}
-                onSelectTheme={setSelectedTheme}
+                selectedThemes={selectedThemes}
+                onToggleTheme={handleToggleTheme}
+                onSelectAll={handleSelectAllThemes}
+                onDeselectAll={handleDeselectAllThemes}
                 onAddTheme={handleAddTheme}
                 onDeleteTheme={handleDeleteTheme}
               />
@@ -387,7 +400,7 @@ const GameApp = () => {
 
             <Button
               onClick={handleStartSetup}
-              disabled={!selectedTheme}
+              disabled={selectedThemes.length === 0}
               className="w-full btn-fire"
               size="lg"
             >

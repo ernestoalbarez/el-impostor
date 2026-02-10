@@ -6,8 +6,9 @@ interface GameContextType {
   gameState: GameState | null;
   themes: Theme[];
   setThemes: (themes: Theme[]) => void;
-  initializeGame: (mode: GameMode, players: string[], impostorCount: number, timerMinutes: number, theme: Theme) => void;
-  revealNextPlayer: () => boolean;
+  initializeGame: (mode: GameMode, players: string[], impostorCount: number, timerMinutes: number, themes: Theme[]) => void;
+  revealPlayer: (playerId: string) => void;
+  revealedPlayerIds: Set<string>;
   startGame: () => void;
   eliminatePlayer: (playerId: string) => { isImpostor: boolean; gameOver: boolean; civilsWin: boolean };
   updateTimer: (time: number) => void;
@@ -28,13 +29,16 @@ export const useGame = () => {
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themes, setThemes] = useState<Theme[]>(defaultThemes as Theme[]);
+  const [revealedPlayerIds, setRevealedPlayerIds] = useState<Set<string>>(new Set());
 
   const assignRoles = useCallback((
     players: string[],
     mode: GameMode,
     requestedImpostors: number,
-    theme: Theme
+    selectedThemes: Theme[]
   ): { assignedPlayers: Player[]; actualImpostorCount: number } => {
+    // Pick a random theme from selected ones
+    const theme = selectedThemes[Math.floor(Math.random() * selectedThemes.length)];
     const playerCount = players.length;
     let impostorCount: number;
     let falseImpostorCount = 0;
@@ -116,17 +120,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     playerNames: string[],
     impostorCount: number,
     timerMinutes: number,
-    theme: Theme
+    selectedThemes: Theme[]
   ) => {
-    const { assignedPlayers, actualImpostorCount } = assignRoles(playerNames, mode, impostorCount, theme);
+    const { assignedPlayers, actualImpostorCount } = assignRoles(playerNames, mode, impostorCount, selectedThemes);
+    const chosenTheme = selectedThemes[Math.floor(Math.random() * selectedThemes.length)];
 
+    setRevealedPlayerIds(new Set());
     setGameState({
       config: {
         mode,
         players: assignedPlayers,
         impostorCount,
         timerMinutes,
-        selectedTheme: theme,
+        selectedTheme: chosenTheme,
       },
       currentPlayerIndex: 0,
       phase: 'reveal',
@@ -136,17 +142,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, [assignRoles]);
 
-  const revealNextPlayer = useCallback((): boolean => {
-    if (!gameState) return false;
-    
-    const nextIndex = gameState.currentPlayerIndex + 1;
-    if (nextIndex >= gameState.config.players.length) {
-      return false;
-    }
-    
-    setGameState(prev => prev ? { ...prev, currentPlayerIndex: nextIndex } : null);
-    return true;
-  }, [gameState]);
+  const revealPlayer = useCallback((playerId: string) => {
+    setRevealedPlayerIds(prev => new Set(prev).add(playerId));
+  }, []);
 
   const startGame = useCallback(() => {
     if (!gameState) return;
@@ -217,6 +215,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const resetGame = useCallback(() => {
     setGameState(null);
+    setRevealedPlayerIds(new Set());
   }, []);
 
   return (
@@ -225,7 +224,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       themes,
       setThemes,
       initializeGame,
-      revealNextPlayer,
+      revealPlayer,
+      revealedPlayerIds,
       startGame,
       eliminatePlayer,
       updateTimer,

@@ -3,56 +3,84 @@
     "id": "1",
     "nombre": "Objetos de cocina",
     "palabra_principal": "cuchara",
-    "variaciones_civil": ["cuchara", "cuchara sopera", "cucharita"],
-    "palabras_relacionadas": ["tenedor", "cucharón", "espátula", "cuchillo"]
+    "variaciones_civil": ["cuchara", "cuchara sopera", "cucharita", "cuchara de madera", "cuchara de postre", "cuchara medidora", "cucharón pequeño"],
+    "palabras_relacionadas": ["tenedor", "cucharón", "espátula", "cuchillo", "batidor", "colador", "sartén", "olla", "rallador", "pinzas", "abrelatas", "pelador", "mortero", "rodillo", "tabla de cortar", "cacerola", "wok", "molde", "bandeja", "tazón", "jarra", "tetera", "cafetera", "licuadora", "procesadora", "tostadora", "microondas", "horno", "fuente", "plato hondo", "plato llano", "vaso", "copa", "taza", "termo", "tupperware", "servilleta", "mantel", "delantal", "guante de horno", "timer de cocina", "balanza", "exprimidor", "molinillo", "salero", "pimentero", "aceitera", "panera", "frutero", "escurridor"]
   },
   {
     "id": "2",
     "nombre": "Animales domésticos",
     "palabra_principal": "perro",
-    "variaciones_civil": ["perro", "cachorro", "can"],
-    "palabras_relacionadas": ["gato", "lobo", "zorro", "coyote"]
+    "variaciones_civil": ["perro", "cachorro", "can", "perrito", "mascota canina", "compañero peludo", "mejor amigo"],
+    "palabras_relacionadas": ["gato", "lobo", "zorro", "coyote", "hámster", "conejo", "tortuga", "pez dorado", "canario", "loro", "periquito", "cobaya", "hurón", "iguana", "serpiente", "ratón", "chinchilla", "erizo", "gecko", "cacatúa", "pato", "gallina", "caballo", "poni", "burro", "cabra", "oveja", "cerdo", "vaca", "alpaca", "llama", "paloma", "cotorra", "guacamayo", "tucán", "búho", "águila", "halcón", "gavilán", "cocodrilo", "camaleón", "salamandra", "sapo", "rana", "pez betta", "carpa", "goldfish", "araña", "escorpión", "tarántula"]
   },
   {
     "id": "3",
     "nombre": "Deportes",
     "palabra_principal": "fútbol",
-    "variaciones_civil": ["fútbol", "soccer", "balompié"],
-    "palabras_relacionadas": ["rugby", "basketball", "handball", "hockey"]
+    "variaciones_civil": ["fútbol", "soccer", "balompié", "fútbol 11", "fútbol profesional", "la pelota", "el deporte rey"],
+    "palabras_relacionadas": ["rugby", "basketball", "handball", "hockey", "tenis", "golf", "cricket", "béisbol", "volleyball", "natación", "atletismo", "ciclismo", "boxeo", "karate", "judo", "taekwondo", "esgrima", "surf", "skateboard", "snowboard", "esquí", "patinaje", "gimnasia", "halterofilia", "remo", "vela", "polo", "waterpolo", "squash", "badminton", "ping pong", "billar", "dardos", "boliche", "parkour", "escalada", "rapel", "paracaidismo", "ala delta", "motocross", "karting", "fórmula 1", "rally", "maratón", "triatlón", "pentatlón", "lucha libre", "sumo", "MMA", "crossfit"]
   },
   {
     "id": "4",
     "nombre": "Frutas",
     "palabra_principal": "manzana",
-    "variaciones_civil": ["manzana", "manzana roja", "manzana verde"],
-    "palabras_relacionadas": ["pera", "durazno", "ciruela", "membrillo"]
+    "variaciones_civil": ["manzana", "manzana roja", "manzana verde", "manzana fuji", "manzana gala", "manzana golden", "manzanita"],
+    "palabras_relacionadas": ["pera", "durazno", "ciruela", "membrillo", "banana", "naranja", "mandarina", "pomelo", "limón", "lima", "sandía", "melón", "uva", "frutilla", "frambuesa", "mora", "arándano", "cereza", "damasco", "kiwi", "mango", "papaya", "ananá", "coco", "maracuyá", "guayaba", "granada", "higo", "dátil", "litchi", "carambola", "pitaya", "chirimoya", "níspero", "bergamota", "quinoto", "tamarindo", "açaí", "goji", "pomelo rosado", "tangelo", "nectarina", "pelón", "caqui", "zapallo", "mamón", "guanábana", "mangostán", "rambután", "jackfruit"]
   },
   {
     "id": "5",
     "nombre": "Profesiones",
     "palabra_principal": "médico",
-    "variaciones_civil": ["médico", "doctor", "doctora"],
-    "palabras_relacionadas": ["enfermero", "veterinario", "paramédico", "cirujano"]
+    "variaciones_civil": ["médico", "doctor", "doctora", "profesional de la salud", "galeno", "facultativo", "clínico"],
+    "palabras_relacionadas": ["enfermero", "veterinario", "paramédico", "cirujano", "abogado", "ingeniero", "arquitecto", "profesor", "bombero", "policía", "piloto", "chef", "periodista", "fotógrafo", "diseñador", "programador", "contador", "psicólogo", "dentista", "farmacéutico", "biólogo", "químico", "físico", "matemático", "sociólogo", "filósofo", "historiador", "arqueólogo", "geólogo", "astrónomo", "carpintero", "electricista", "plomero", "mecánico", "albañil", "pintor", "escultor", "músico", "actor", "director", "productor", "escritor", "poeta", "traductor", "diplomático", "político", "juez", "notario", "detective", "espía"]
   },
   {
     "id": "6",
     "nombre": "Lugares",
     "palabra_principal": "playa",
-    "variaciones_civil": ["playa", "costa", "orilla del mar"],
-    "palabras_relacionadas": ["piscina", "lago", "río", "desierto"]
+    "variaciones_civil": ["playa", "costa", "orilla del mar", "litoral", "playita", "arenal", "ribera marina"],
+    "palabras_relacionadas": ["piscina", "lago", "río", "desierto", "montaña", "bosque", "selva", "cueva", "volcán", "glaciar", "isla", "archipiélago", "península", "valle", "meseta", "llanura", "pantano", "cascada", "cañón", "acantilado", "fiordo", "oasis", "tundra", "sabana", "pradera", "estepa", "parque", "jardín", "plaza", "mercado", "puerto", "aeropuerto", "estación", "hospital", "universidad", "biblioteca", "museo", "teatro", "cine", "estadio", "iglesia", "castillo", "palacio", "faro", "puente", "túnel", "rascacielos", "barrio", "aldea", "metrópolis"]
   },
   {
     "id": "7",
     "nombre": "Instrumentos musicales",
     "palabra_principal": "guitarra",
-    "variaciones_civil": ["guitarra", "guitarra eléctrica", "guitarra acústica"],
-    "palabras_relacionadas": ["bajo", "ukulele", "banjo", "mandolina"]
+    "variaciones_civil": ["guitarra", "guitarra eléctrica", "guitarra acústica", "guitarra criolla", "guitarra clásica", "guitarra española", "viola de mano"],
+    "palabras_relacionadas": ["bajo", "ukulele", "banjo", "mandolina", "piano", "teclado", "órgano", "acordeón", "armónica", "flauta", "clarinete", "saxofón", "trompeta", "trombón", "tuba", "corno francés", "oboe", "fagot", "violín", "viola", "violonchelo", "contrabajo", "arpa", "cítara", "laúd", "sitar", "tambor", "batería", "bongó", "conga", "maracas", "pandereta", "triángulo", "xilófono", "marimba", "vibráfono", "campana", "gong", "cajón peruano", "djembé", "didgeridoo", "gaita", "charango", "bandoneón", "sintetizador", "theremin", "kalimba", "ocarina", "zampoña", "quena"]
   },
   {
     "id": "8",
     "nombre": "Medios de transporte",
     "palabra_principal": "avión",
-    "variaciones_civil": ["avión", "aeroplano", "aeronave"],
-    "palabras_relacionadas": ["helicóptero", "cohete", "globo aerostático", "dron"]
+    "variaciones_civil": ["avión", "aeroplano", "aeronave", "avioneta", "jet", "vuelo comercial", "nave aérea"],
+    "palabras_relacionadas": ["helicóptero", "cohete", "globo aerostático", "dron", "auto", "camioneta", "camión", "moto", "bicicleta", "monopatín", "patines", "tren", "subte", "tranvía", "trolebús", "colectivo", "taxi", "barco", "lancha", "velero", "yate", "crucero", "canoa", "kayak", "submarino", "portaaviones", "ferry", "catamarán", "jet ski", "tabla de surf", "trineo", "cuatriciclo", "segway", "monoriel", "teleférico", "funicular", "paraglider", "ala delta", "parapente", "zeppelin", "nave espacial", "satélite", "transbordador", "limusina", "rickshaw", "carreta", "diligencia", "gondola", "tuk-tuk", "hovercraft"]
+  },
+  {
+    "id": "9",
+    "nombre": "Comidas",
+    "palabra_principal": "pizza",
+    "variaciones_civil": ["pizza", "pizza napolitana", "pizza margarita", "porción de pizza", "pizzeta", "pizza casera", "pizza al horno"],
+    "palabras_relacionadas": ["hamburguesa", "sushi", "tacos", "empanada", "milanesa", "asado", "pasta", "risotto", "paella", "ceviche", "arepa", "tamales", "falafel", "shawarma", "curry", "pad thai", "ramen", "pho", "dim sum", "gyoza", "croqueta", "tortilla española", "gazpacho", "borscht", "goulash", "fondue", "raclette", "crêpe", "waffle", "pancake", "brownie", "tiramisú", "cheesecake", "flan", "helado", "churros", "donut", "croissant", "bagel", "pretzel", "nachos", "guacamole", "hummus", "bruschetta", "carpaccio", "tartar", "ceviche", "poke bowl", "burrito", "quesadilla"]
+  },
+  {
+    "id": "10",
+    "nombre": "Películas y cine",
+    "palabra_principal": "terror",
+    "variaciones_civil": ["terror", "película de miedo", "film de horror", "cine de terror", "género de suspenso", "película escalofriante", "peli de susto"],
+    "palabras_relacionadas": ["comedia", "drama", "acción", "romance", "ciencia ficción", "fantasía", "western", "musical", "documental", "thriller", "animación", "superhéroes", "noir", "gore", "slasher", "zombies", "vampiros", "fantasmas", "monstruos", "aliens", "apocalipsis", "distopía", "utopía", "espionaje", "guerra", "biopic", "histórica", "experimental", "indie", "blockbuster", "secuela", "precuela", "remake", "reboot", "spin-off", "cortometraje", "saga", "trilogía", "antología", "mockumentary", "found footage", "stop motion", "anime", "claymation", "live action", "ópera espacial", "cyberpunk", "steampunk", "kaiju", "wuxia"]
+  },
+  {
+    "id": "11",
+    "nombre": "Ropa y accesorios",
+    "palabra_principal": "remera",
+    "variaciones_civil": ["remera", "camiseta", "playera", "polera", "t-shirt", "remera manga corta", "camiseta básica"],
+    "palabras_relacionadas": ["pantalón", "jean", "camisa", "campera", "buzo", "chaleco", "saco", "vestido", "falda", "short", "bermuda", "jogger", "calza", "medias", "zapatillas", "botas", "sandalias", "ojotas", "zapatos", "cinturón", "corbata", "moño", "bufanda", "gorro", "sombrero", "gorra", "guantes", "pulsera", "collar", "anillo", "aros", "reloj", "anteojos", "lentes de sol", "mochila", "cartera", "billetera", "riñonera", "paraguas", "pañuelo", "delantal", "traje", "esmoquin", "toga", "kimono", "poncho", "ruana", "pareo", "bikini", "traje de baño"]
+  },
+  {
+    "id": "12",
+    "nombre": "Tecnología",
+    "palabra_principal": "celular",
+    "variaciones_civil": ["celular", "teléfono móvil", "smartphone", "dispositivo móvil", "teléfono inteligente", "celu", "móvil"],
+    "palabras_relacionadas": ["computadora", "tablet", "notebook", "smartwatch", "auriculares", "parlante", "mouse", "teclado", "monitor", "impresora", "escáner", "router", "modem", "USB", "disco externo", "pendrive", "cámara digital", "drone", "consola", "joystick", "realidad virtual", "GPS", "proyector", "televisor", "control remoto", "cargador", "power bank", "cable HDMI", "webcam", "micrófono", "lector de ebook", "smart TV", "chromecast", "alexa", "robot aspiradora", "termostato", "sensor", "chip", "procesador", "tarjeta gráfica", "SSD", "RAM", "placa madre", "fuente de poder", "cooler", "hub USB", "adaptador", "antena", "fibra óptica", "servidor"]
   }
 ]
