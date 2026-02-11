@@ -1,12 +1,16 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { GameMode, Player, Theme, GameState, RoleType } from '@/types/game';
-import defaultThemes from '@/data/themes.json';
+import { GameMode, Player, Category, GameState, Word } from '@/types/game';
+import { assignRoles } from '@/engine/roleAssignment';
+import { selectCategory, selectWord } from '@/engine/wordSelector';
+import { checkVictoryCondition } from '@/engine/votingEngine';
+import { recordGame } from '@/engine/statsManager';
+import defaultCategories from '@/data/themes.json';
 
 interface GameContextType {
   gameState: GameState | null;
-  themes: Theme[];
-  setThemes: (themes: Theme[]) => void;
-  initializeGame: (mode: GameMode, players: string[], impostorCount: number, timerMinutes: number, themes: Theme[]) => void;
+  categories: Category[];
+  setCategories: (c: Category[]) => void;
+  initializeGame: (mode: GameMode, players: string[], impostorCount: number, timerMinutes: number, categories: Category[]) => void;
   revealPlayer: (playerId: string) => void;
   revealedPlayerIds: Set<string>;
   startGame: () => void;
@@ -20,143 +24,35 @@ const GameContext = createContext<GameContextType | null>(null);
 
 export const useGame = () => {
   const context = useContext(GameContext);
-  if (!context) {
-    throw new Error('useGame must be used within a GameProvider');
-  }
+  if (!context) throw new Error('useGame must be used within a GameProvider');
   return context;
 };
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [themes, setThemes] = useState<Theme[]>(defaultThemes as Theme[]);
+  const [categories, setCategories] = useState<Category[]>(defaultCategories as Category[]);
   const [revealedPlayerIds, setRevealedPlayerIds] = useState<Set<string>>(new Set());
-
-  const assignRoles = useCallback((
-    players: string[],
-    mode: GameMode,
-    requestedImpostors: number,
-    selectedThemes: Theme[]
-  ): { assignedPlayers: Player[]; actualImpostorCount: number } => {
-    const theme = selectedThemes[Math.floor(Math.random() * selectedThemes.length)];
-    const playerCount = players.length;
-    let impostorCount: number;
-    let falseImpostorCount = 0;
-    let impostorNoWordCount = 0;
-
-    if (mode === 'classic') {
-      impostorCount = Math.min(requestedImpostors, playerCount - 1);
-    } else if (mode === 'chaos') {
-      impostorCount = Math.max(1, Math.floor(Math.random() * (playerCount - 1)) + 1);
-      impostorCount = Math.min(impostorCount, Math.floor(playerCount / 2));
-    } else {
-      // Extreme chaos
-      impostorCount = Math.floor(Math.random() * playerCount);
-      if (playerCount >= 4 && Math.random() > 0.5) {
-        const maxFalse = Math.max(0, playerCount - impostorCount - 1);
-        falseImpostorCount = maxFalse > 0 ? Math.floor(Math.random() * Math.min(2, maxFalse)) + 1 : 0;
-      }
-      if (impostorCount > 0 && Math.random() > 0.6) {
-        impostorNoWordCount = Math.min(1, impostorCount);
-      }
-    }
-
-    // Shuffle indices
-    const indices = Array.from({ length: playerCount }, (_, i) => i);
-    for (let i = indices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]];
-    }
-
-    const assignedPlayers: Player[] = players.map((name, i) => ({
-      id: `player-${i}`,
-      name,
-      isEliminated: false,
-    }));
-
-    let assignedCount = 0;
-
-    if (mode === 'classic' || mode === 'chaos') {
-      // CLASSIC & CHAOS: All civils see the SAME word, all impostors see the SAME related word
-      const civilWord = theme.variaciones_civil[Math.floor(Math.random() * theme.variaciones_civil.length)];
-      const impostorWord = theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)];
-
-      for (let i = 0; i < impostorCount; i++) {
-        const playerIndex = indices[assignedCount];
-        assignedPlayers[playerIndex].role = 'impostor';
-        assignedPlayers[playerIndex].word = impostorWord;
-        assignedCount++;
-      }
-
-      for (let i = assignedCount; i < playerCount; i++) {
-        const playerIndex = indices[i];
-        assignedPlayers[playerIndex].role = 'civil';
-        assignedPlayers[playerIndex].word = civilWord;
-      }
-    } else {
-      // EXTREME CHAOS: Each player may get a different word
-
-      // Impostors without word
-      for (let i = 0; i < impostorNoWordCount && assignedCount < impostorCount; i++) {
-        const playerIndex = indices[assignedCount];
-        assignedPlayers[playerIndex].role = 'impostorNoWord';
-        assignedPlayers[playerIndex].word = undefined;
-        assignedCount++;
-      }
-
-      // Regular impostors - may or may not get the same word
-      const impostorBaseWord = theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)];
-      const regularImpostors = impostorCount - impostorNoWordCount;
-      for (let i = 0; i < regularImpostors; i++) {
-        const playerIndex = indices[assignedCount];
-        assignedPlayers[playerIndex].role = 'impostor';
-        // 50% chance each impostor gets a different related word
-        assignedPlayers[playerIndex].word = Math.random() > 0.5
-          ? theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)]
-          : impostorBaseWord;
-        assignedCount++;
-      }
-
-      // False impostors
-      for (let i = 0; i < falseImpostorCount; i++) {
-        const playerIndex = indices[assignedCount];
-        assignedPlayers[playerIndex].role = 'falseImpostor';
-        assignedPlayers[playerIndex].word = theme.palabras_relacionadas[Math.floor(Math.random() * theme.palabras_relacionadas.length)];
-        assignedCount++;
-      }
-
-      // Civilians - may or may not get the same variation
-      const civilBaseWord = theme.variaciones_civil[Math.floor(Math.random() * theme.variaciones_civil.length)];
-      for (let i = assignedCount; i < playerCount; i++) {
-        const playerIndex = indices[i];
-        assignedPlayers[playerIndex].role = 'civil';
-        // 50% chance each civil gets a different variation
-        assignedPlayers[playerIndex].word = Math.random() > 0.5
-          ? theme.variaciones_civil[Math.floor(Math.random() * theme.variaciones_civil.length)]
-          : civilBaseWord;
-      }
-    }
-
-    return { assignedPlayers, actualImpostorCount: impostorCount };
-  }, []);
 
   const initializeGame = useCallback((
     mode: GameMode,
     playerNames: string[],
     impostorCount: number,
     timerMinutes: number,
-    selectedThemes: Theme[]
+    selectedCategories: Category[]
   ) => {
-    const { assignedPlayers, actualImpostorCount } = assignRoles(playerNames, mode, impostorCount, selectedThemes);
-    const chosenTheme = selectedThemes[Math.floor(Math.random() * selectedThemes.length)];
+    const category = selectCategory(selectedCategories);
+    const word = selectWord(category);
+    const { players, actualImpostorCount } = assignRoles(playerNames, mode, impostorCount, word);
 
     setRevealedPlayerIds(new Set());
     setGameState({
       config: {
         mode,
-        players: assignedPlayers,
+        players,
         impostorCount,
         timerMinutes,
-        selectedTheme: chosenTheme,
+        selectedCategory: category,
+        selectedWord: word,
       },
       currentPlayerIndex: 0,
       phase: 'reveal',
@@ -164,7 +60,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       actualImpostorCount,
       eliminatedPlayers: [],
     });
-  }, [assignRoles]);
+  }, []);
 
   const revealPlayer = useCallback((playerId: string) => {
     setRevealedPlayerIds(prev => new Set(prev).add(playerId));
@@ -172,28 +68,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const startGame = useCallback(() => {
     if (!gameState) return;
-    
     const activePlayers = gameState.config.players.filter(p => !p.isEliminated);
     const startingPlayer = activePlayers[Math.floor(Math.random() * activePlayers.length)];
-    
-    setGameState(prev => prev ? {
-      ...prev,
-      phase: 'playing',
-      startingPlayer: startingPlayer.name,
-    } : null);
+    setGameState(prev => prev ? { ...prev, phase: 'playing', startingPlayer: startingPlayer.name } : null);
   }, [gameState]);
 
   const eliminatePlayer = useCallback((playerId: string): { isImpostor: boolean; gameOver: boolean; civilsWin: boolean } => {
     if (!gameState) return { isImpostor: false, gameOver: false, civilsWin: false };
-    
     const player = gameState.config.players.find(p => p.id === playerId);
     if (!player) return { isImpostor: false, gameOver: false, civilsWin: false };
-    
-    const isImpostor = player.role === 'impostor' || player.role === 'impostorNoWord';
-    
+
+    const isImpostor = player.role === 'impostor';
+
     setGameState(prev => {
       if (!prev) return null;
-      const updatedPlayers = prev.config.players.map(p => 
+      const updatedPlayers = prev.config.players.map(p =>
         p.id === playerId ? { ...p, isEliminated: true } : p
       );
       return {
@@ -203,31 +92,20 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
     });
 
-    // Check victory conditions after this elimination
     const remainingPlayers = gameState.config.players.filter(
       p => !p.isEliminated && p.id !== playerId
     );
-    const remainingImpostors = remainingPlayers.filter(
-      p => p.role === 'impostor' || p.role === 'impostorNoWord'
-    ).length;
-    const remainingCivils = remainingPlayers.filter(
-      p => p.role === 'civil' || p.role === 'falseImpostor'
-    ).length;
+    const result = checkVictoryCondition(remainingPlayers);
 
-    // Civils win: no impostors left
-    // Impostors win: no civils left OR impostors >= civils (1v1 scenario)
-    let gameOver = false;
-    let civilsWin = false;
-
-    if (remainingImpostors === 0) {
-      gameOver = true;
-      civilsWin = true;
-    } else if (remainingCivils === 0 || remainingImpostors >= remainingCivils) {
-      gameOver = true;
-      civilsWin = false;
+    if (result.gameOver) {
+      // Record stats
+      const allPlayers = gameState.config.players.map(p =>
+        p.id === playerId ? { ...p, isEliminated: true } : p
+      );
+      recordGame(allPlayers, result.civilsWin);
     }
 
-    return { isImpostor, gameOver, civilsWin };
+    return { isImpostor, ...result };
   }, [gameState]);
 
   const updateTimer = useCallback((time: number) => {
@@ -236,28 +114,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const checkVictory = useCallback((): { gameOver: boolean; civilsWin: boolean } => {
     if (!gameState) return { gameOver: false, civilsWin: false };
-    
     const remaining = gameState.config.players.filter(p => !p.isEliminated);
-    const remainingImpostors = remaining.filter(
-      p => p.role === 'impostor' || p.role === 'impostorNoWord'
-    ).length;
-    const remainingCivils = remaining.filter(
-      p => p.role === 'civil' || p.role === 'falseImpostor'
-    ).length;
+    const result = checkVictoryCondition(remaining);
 
-    if (remainingImpostors === 0) {
-      return { gameOver: true, civilsWin: true };
+    if (gameState.timeRemaining <= 0) {
+      const impostors = remaining.filter(p => p.role === 'impostor').length;
+      if (impostors > 0) return { gameOver: true, civilsWin: false };
     }
 
-    if (remainingCivils === 0 || remainingImpostors >= remainingCivils) {
-      return { gameOver: true, civilsWin: false };
-    }
-
-    if (gameState.timeRemaining <= 0 && remainingImpostors > 0) {
-      return { gameOver: true, civilsWin: false };
-    }
-
-    return { gameOver: false, civilsWin: false };
+    return result;
   }, [gameState]);
 
   const resetGame = useCallback(() => {
@@ -268,8 +133,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <GameContext.Provider value={{
       gameState,
-      themes,
-      setThemes,
+      categories,
+      setCategories,
       initializeGame,
       revealPlayer,
       revealedPlayerIds,

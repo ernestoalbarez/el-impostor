@@ -1,6 +1,6 @@
 export type GameMode = 'classic' | 'chaos' | 'extreme';
 
-export type RoleType = 'civil' | 'impostor' | 'falseImpostor' | 'impostorNoWord';
+export type RoleType = 'civil' | 'impostor' | 'falseImpostor';
 
 export interface Player {
   id: string;
@@ -10,12 +10,16 @@ export interface Player {
   isEliminated: boolean;
 }
 
-export interface Theme {
+export interface Word {
+  principal: string;
+  pista_principal: string;
+  pistas_secundarias: string[];
+}
+
+export interface Category {
   id: string;
   nombre: string;
-  palabra_principal: string;
-  variaciones_civil: string[];
-  palabras_relacionadas: string[];
+  palabras: Word[];
 }
 
 export interface GameConfig {
@@ -23,7 +27,8 @@ export interface GameConfig {
   players: Player[];
   impostorCount: number;
   timerMinutes: number;
-  selectedTheme?: Theme;
+  selectedCategory?: Category;
+  selectedWord?: Word;
 }
 
 export interface GameState {
@@ -36,4 +41,13 @@ export interface GameState {
   eliminatedPlayers: Player[];
 }
 
-// Los temas se cargan desde src/data/themes.json
+export interface PlayerStats {
+  totalGames: number;
+  winsAsCivil: number;
+  winsAsImpostor: number;
+  winsAsFalseImpostor: number;
+}
+
+export interface StatsRecord {
+  [playerName: string]: PlayerStats;
+}
