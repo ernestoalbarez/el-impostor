@@ -1,73 +1,157 @@
-# Welcome to your Lovable project
+# El Impostor – The Impostor’s Gambit
 
-## Project info
+Juego social de deducción diseñado para generar incertidumbre, conversación y engaño.  
+Este proyecto fue creado utilizando **Lovable** como generador base y se desarrolla localmente como una aplicación web moderna y responsive.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## ¿De qué trata el juego?
 
-There are several ways of editing your application.
+**El Impostor** es un juego por turnos donde los jugadores deben descubrir quién (o quiénes) no conocen la palabra correcta antes de que se termine el tiempo.
 
-**Use Lovable**
+La clave del juego no es solo mentir bien, sino **no saber en qué confiar**.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## Roles principales
 
-**Use your preferred IDE**
+Dependiendo del modo de juego, los jugadores pueden asumir distintos roles:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Civil**
+  - Conoce la palabra principal (o una variación válida).
+  - Gana si todos los impostores son eliminados.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Impostor**
+  - No conoce la palabra principal.
+  - Puede recibir una palabra relacionada… o ninguna.
+  - Gana si el tiempo termina y sigue activo.
 
-Follow these steps:
+### Roles especiales (modos avanzados)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- **🕶️ Falso impostor**
+  - Es civil, pero recibe una palabra relacionada.
+  - Para el grupo, es indistinguible de un impostor real.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- **Impostor sin palabra**
+  - Es impostor real.
+  - No recibe ninguna palabra y debe improvisar completamente.
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## Modos de juego
+
+### Modo Clásico
+- Cantidad de impostores definida manualmente.
+
+### Modo Caos
+- La app decide aleatoriamente cuántos impostores hay.
+- Puede haber incluso **0 impostores**.
+
+### Modo Caos Extremo
+- Nadie sabe cuántos impostores hay.
+- Los impostores no saben si están solos.
+- Las palabras pueden variar incluso entre civiles.
+- El caos es intencional y parte del diseño.
+
+---
+
+## Palabras y temáticas
+
+Las palabras **no se generan automáticamente**.
+
+Cada temática contiene:
+- Una palabra principal
+- Variaciones para civiles
+- Un conjunto limitado de palabras relacionadas (para impostores)
+
+Las temáticas pueden:
+- Gestionarse desde la app
+- Importarse desde un archivo JSON
+
+Esto permite controlar el balance y evitar ambigüedades no deseadas.
+
+---
+
+## Flujo de una partida
+
+1. Configuración de jugadores, modo y temática.
+2. Asignación aleatoria de roles y palabras.
+3. Cada jugador ve su información de forma privada.
+4. La app elige al azar quién comienza.
+5. Corre el tiempo y los jugadores discuten.
+6. Se vota para eliminar jugadores.
+7. Se determina el equipo ganador.
+8. Se registran estadísticas.
+
+---
+
+## Estadísticas
+
+El juego mantiene estadísticas persistentes por jugador:
+- Victorias como civil
+- Victorias como impostor
+- Total de partidas jugadas
+
+---
+
+## Stack tecnológico
+
+Este proyecto está construido con:
+
+- **Lovable** – generación y evolución del proyecto mediante prompts
+- **Vite** – bundler rápido para desarrollo moderno
+- **React + TypeScript** – UI declarativa y tipada
+- **Tailwind CSS** – estilos utilitarios
+- **shadcn/ui** – componentes accesibles y reutilizables
+
+Arquitectura orientada a:
+- Estados claros del juego
+- Separación entre lógica, datos y UI
+- Escalabilidad de reglas y modos
+
+---
+
+## Desarrollo local
+
+Requisitos:
+- Node.js
+- npm
+
+```bash
+git clone git@github.com:ernestoalbarez/the-impostor-s-gambit.git
+cd the-impostor-s-gambit
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🧪 Filosofía del diseño
 
-**Use GitHub Codespaces**
+- El juego **no ayuda a deducir**
+- La ambigüedad es una feature, no un bug
+- El diseño prioriza conversación y paranoia
+- Ninguna partida debería sentirse igual a otra
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 📌 Nota final
 
-This project is built with:
+Este proyecto es un experimento de diseño social tanto como un juego.  
+Si algo se siente incómodo o incierto… probablemente esté funcionando.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 📄 Licencia
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Este proyecto se distribuye bajo la **Licencia MIT**.
 
-## Can I connect a custom domain to my Lovable project?
+Esto significa que podés:
+- Usar el código libremente
+- Modificarlo
+- Distribuirlo
+- Utilizarlo en proyectos personales o comerciales
 
-Yes, you can!
+Siempre que incluyas el aviso de copyright y la licencia original.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+© 2026 Ernesto Álvarez
