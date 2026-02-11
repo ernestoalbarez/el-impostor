@@ -154,4 +154,4 @@ Esto significa que podés:
 
 Siempre que incluyas el aviso de copyright y la licencia original.
 
-© 2026 Ernesto Álvarez
+© 2026 Ernesto Albarez
