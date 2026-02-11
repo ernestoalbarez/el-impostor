@@ -57,8 +57,8 @@ export const EliminationResult = ({
           )}
         >
           {isImpostor
-            ? 'Un impostor ha sido descubierto'
-            : 'Se eliminó a un civil'}
+            ? '¡Impostor eliminado!'
+            : 'Civil eliminado'}
         </p>
       </motion.div>
 

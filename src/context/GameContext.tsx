@@ -200,17 +200,32 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...prev,
         config: { ...prev.config, players: updatedPlayers },
         eliminatedPlayers: [...prev.eliminatedPlayers, player],
-        phase: 'result',
       };
     });
 
-    // Check victory conditions
-    const remainingImpostors = gameState.config.players.filter(
-      p => !p.isEliminated && p.id !== playerId && (p.role === 'impostor' || p.role === 'impostorNoWord')
+    // Check victory conditions after this elimination
+    const remainingPlayers = gameState.config.players.filter(
+      p => !p.isEliminated && p.id !== playerId
+    );
+    const remainingImpostors = remainingPlayers.filter(
+      p => p.role === 'impostor' || p.role === 'impostorNoWord'
+    ).length;
+    const remainingCivils = remainingPlayers.filter(
+      p => p.role === 'civil' || p.role === 'falseImpostor'
     ).length;
 
-    const gameOver = remainingImpostors === 0;
-    const civilsWin = gameOver;
+    // Civils win: no impostors left
+    // Impostors win: no civils left OR impostors >= civils (1v1 scenario)
+    let gameOver = false;
+    let civilsWin = false;
+
+    if (remainingImpostors === 0) {
+      gameOver = true;
+      civilsWin = true;
+    } else if (remainingCivils === 0 || remainingImpostors >= remainingCivils) {
+      gameOver = true;
+      civilsWin = false;
+    }
 
     return { isImpostor, gameOver, civilsWin };
   }, [gameState]);
@@ -222,12 +237,20 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkVictory = useCallback((): { gameOver: boolean; civilsWin: boolean } => {
     if (!gameState) return { gameOver: false, civilsWin: false };
     
-    const remainingImpostors = gameState.config.players.filter(
-      p => !p.isEliminated && (p.role === 'impostor' || p.role === 'impostorNoWord')
+    const remaining = gameState.config.players.filter(p => !p.isEliminated);
+    const remainingImpostors = remaining.filter(
+      p => p.role === 'impostor' || p.role === 'impostorNoWord'
+    ).length;
+    const remainingCivils = remaining.filter(
+      p => p.role === 'civil' || p.role === 'falseImpostor'
     ).length;
 
     if (remainingImpostors === 0) {
       return { gameOver: true, civilsWin: true };
+    }
+
+    if (remainingCivils === 0 || remainingImpostors >= remainingCivils) {
+      return { gameOver: true, civilsWin: false };
     }
 
     if (gameState.timeRemaining <= 0 && remainingImpostors > 0) {
