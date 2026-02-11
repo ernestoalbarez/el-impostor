@@ -118,8 +118,8 @@ Requisitos:
 - npm
 
 ```bash
-git clone git@github.com:ernestoalbarez/the-impostor-s-gambit.git
-cd the-impostor-s-gambit
+git clone git@github.com:ernestoalbarez/el-impostor.git
+cd el-impostor
 npm install
 npm run dev
 ```
