@@ -1,4 +1,4 @@
-# El Impostor – The Impostor’s Gambit
+# El Impostor
 
 Juego social de deducción diseñado para generar incertidumbre, conversación y engaño.  
 Este proyecto fue creado utilizando **Lovable** como generador base y se desarrolla localmente como una aplicación web moderna y responsive.
