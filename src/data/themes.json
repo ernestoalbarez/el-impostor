@@ -100,7 +100,7 @@
       { "principal": "bruschetta", "pista_principal": "tomate", "pistas_secundarias": ["pan", "Italia", "albahaca"] },
       { "principal": "pretzel", "pista_principal": "sal", "pistas_secundarias": ["nudo", "masa", "Alemania"] },
       { "principal": "bagel", "pista_principal": "agujero", "pistas_secundarias": ["pan", "queso crema", "redondo"] },
-      { "principal": "cheesecake", "pista_principal": "queso crema", "pistas_secundarias": ["postre", "base", "frío"] },
+      { "principal": "cheesecake", "pista_principal": "queso crema", "pistas_secundarias": ["postre", "base", "frío"] }
     ]
   },
   {
