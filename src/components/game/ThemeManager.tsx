@@ -61,38 +61,38 @@ export const ThemeManager = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-muted-foreground">
           <Book className="w-5 h-5" />
-          <span className="text-sm uppercase tracking-wider">Categorías</span>
+          <span className="text-xs uppercase tracking-widest font-medium">Categorías</span>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={allSelected ? onDeselectAll : onSelectAll} className="text-xs">
+          <Button variant="ghost" size="sm" onClick={allSelected ? onDeselectAll : onSelectAll} className="text-xs hover:bg-secondary/50 rounded-lg">
             {allSelected ? 'Ninguna' : 'Todas'}
           </Button>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="sm"><Plus className="w-4 h-4 mr-1" />Nueva</Button>
+              <Button variant="ghost" size="sm" className="hover:bg-secondary/50 rounded-lg"><Plus className="w-4 h-4 mr-1" />Nueva</Button>
             </DialogTrigger>
-            <DialogContent className="card-mystery border-border/50">
+            <DialogContent className="card-glass border-border/30 rounded-2xl">
               <DialogHeader>
-                <DialogTitle className="text-2xl font-display">Nueva categoría</DialogTitle>
+                <DialogTitle className="text-2xl font-display font-extrabold">Nueva categoría</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
-                  <Label htmlFor="nombre">Nombre</Label>
-                  <Input id="nombre" value={newCat.nombre} onChange={e => setNewCat({ ...newCat, nombre: e.target.value })} placeholder="Ej: Países" className="bg-secondary/50" />
+                  <Label htmlFor="nombre" className="text-xs text-muted-foreground uppercase tracking-wider">Nombre</Label>
+                  <Input id="nombre" value={newCat.nombre} onChange={e => setNewCat({ ...newCat, nombre: e.target.value })} placeholder="Ej: Países" className="bg-secondary/30 border-border/30 rounded-xl mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="principal">Palabra principal</Label>
-                  <Input id="principal" value={newCat.principal} onChange={e => setNewCat({ ...newCat, principal: e.target.value })} placeholder="Ej: Argentina" className="bg-secondary/50" />
+                  <Label htmlFor="principal" className="text-xs text-muted-foreground uppercase tracking-wider">Palabra principal</Label>
+                  <Input id="principal" value={newCat.principal} onChange={e => setNewCat({ ...newCat, principal: e.target.value })} placeholder="Ej: Argentina" className="bg-secondary/30 border-border/30 rounded-xl mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="pista">Pista principal (para impostores)</Label>
-                  <Input id="pista" value={newCat.pista} onChange={e => setNewCat({ ...newCat, pista: e.target.value })} placeholder="Ej: tango" className="bg-secondary/50" />
+                  <Label htmlFor="pista" className="text-xs text-muted-foreground uppercase tracking-wider">Pista principal</Label>
+                  <Input id="pista" value={newCat.pista} onChange={e => setNewCat({ ...newCat, pista: e.target.value })} placeholder="Ej: tango" className="bg-secondary/30 border-border/30 rounded-xl mt-1" />
                 </div>
                 <div>
-                  <Label htmlFor="secundarias">Pistas secundarias (separadas por coma)</Label>
-                  <Input id="secundarias" value={newCat.secundarias} onChange={e => setNewCat({ ...newCat, secundarias: e.target.value })} placeholder="Ej: mate, asado, fútbol" className="bg-secondary/50" />
+                  <Label htmlFor="secundarias" className="text-xs text-muted-foreground uppercase tracking-wider">Pistas secundarias (separadas por coma)</Label>
+                  <Input id="secundarias" value={newCat.secundarias} onChange={e => setNewCat({ ...newCat, secundarias: e.target.value })} placeholder="Ej: mate, asado, fútbol" className="bg-secondary/30 border-border/30 rounded-xl mt-1" />
                 </div>
-                <Button onClick={handleAdd} className="w-full btn-fire">
+                <Button onClick={handleAdd} className="w-full btn-fire rounded-xl h-11">
                   <Save className="w-4 h-4 mr-2" />Guardar
                 </Button>
               </div>
@@ -114,11 +114,13 @@ export const ThemeManager = ({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => onToggleCategory(cat)}
               className={cn(
-                'relative p-4 rounded-xl border-2 text-left transition-all duration-200',
-                'bg-secondary/30 hover:bg-secondary/50',
-                isSelected(cat) ? 'border-primary bg-primary/10' : 'border-border/50 hover:border-primary/50'
+                'relative p-4 rounded-xl border text-left transition-all duration-200',
+                'bg-secondary/20 hover:bg-secondary/40 backdrop-blur-sm',
+                isSelected(cat) ? 'border-primary/50 bg-primary/10' : 'border-border/30 hover:border-primary/30'
               )}
             >
               {isSelected(cat) && (
@@ -126,8 +128,8 @@ export const ThemeManager = ({
                   <Check className="w-3 h-3 text-primary-foreground" />
                 </div>
               )}
-              <p className="font-medium text-sm mb-1 pr-6">{cat.nombre}</p>
-              <p className="text-xs text-muted-foreground">{cat.palabras.length} palabras</p>
+              <p className="font-semibold text-sm mb-1 pr-6">{cat.nombre}</p>
+              <p className="text-[11px] text-muted-foreground">{cat.palabras.length} palabras</p>
               {cat.id.startsWith('custom-') && (
                 <button
                   onClick={e => { e.stopPropagation(); onDeleteCategory(cat.id); }}
