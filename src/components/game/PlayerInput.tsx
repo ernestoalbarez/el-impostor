@@ -28,18 +28,16 @@ export const PlayerInput = ({
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleAddPlayer();
-    }
+    if (e.key === 'Enter') handleAddPlayer();
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-muted-foreground">
         <Users className="w-5 h-5" />
-        <span className="text-sm">
+        <span className="text-sm font-medium">
           {players.length} jugador{players.length !== 1 ? 'es' : ''} 
-          {players.length < minPlayers && ` (mínimo ${minPlayers})`}
+          {players.length < minPlayers && <span className="text-xs ml-1 text-muted-foreground/70">(mínimo {minPlayers})</span>}
         </span>
       </div>
 
@@ -49,13 +47,13 @@ export const PlayerInput = ({
           onChange={(e) => setNewPlayer(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Nombre del jugador"
-          className="flex-1 bg-secondary/50 border-border/50 focus:border-primary"
+          className="flex-1 bg-secondary/30 border-border/30 focus:border-primary/50 rounded-xl h-11"
         />
         <Button
           onClick={handleAddPlayer}
           disabled={!newPlayer.trim() || players.includes(newPlayer.trim())}
           size="icon"
-          className="shrink-0"
+          className="shrink-0 rounded-xl h-11 w-11"
         >
           <UserPlus className="w-4 h-4" />
         </Button>
@@ -70,17 +68,14 @@ export const PlayerInput = ({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               layout
-              className={cn(
-                'flex items-center justify-between p-3 rounded-lg',
-                'bg-secondary/30 border border-border/30'
-              )}
+              className="flex items-center justify-between p-3 rounded-xl bg-secondary/20 border border-border/20"
             >
-              <span className="font-medium">{player}</span>
+              <span className="font-medium text-sm">{player}</span>
               <Button
                 onClick={() => onRemovePlayer(index)}
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10"
               >
                 <X className="w-4 h-4" />
               </Button>
