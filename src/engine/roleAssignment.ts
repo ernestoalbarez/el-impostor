@@ -50,10 +50,13 @@ export function assignRoles(
 
   const indices = shuffle(Array.from({ length: n }, (_, i) => i));
 
+  const isRoleHidden = mode === 'chaos';
+
   const players: Player[] = playerNames.map((name, i) => ({
     id: `player-${i}`,
     name,
     isEliminated: false,
+    isRoleRevealed: !isRoleHidden,
   }));
 
   let idx = 0;

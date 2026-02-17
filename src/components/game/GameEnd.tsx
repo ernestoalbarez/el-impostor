@@ -79,6 +79,7 @@ export const GameEnd = ({
             {players.map((player, index) => {
               const isImpostorRole = player.role === 'impostor';
               const isFalseImpostor = player.role === 'falseImpostor';
+              // At game end, always reveal all roles
               return (
                 <motion.div
                   key={player.id}

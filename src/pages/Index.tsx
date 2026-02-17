@@ -167,12 +167,14 @@ const GameApp = () => {
   // Game Screen
   if (step === 'game' && gameState) {
     if (gameState.phase === 'reveal') {
+      const hideRoles = gameState.config.mode === 'chaos';
       return (
         <RoleReveal
           players={gameState.config.players}
           revealedPlayerIds={revealedPlayerIds}
           onRevealPlayer={revealPlayer}
           onStartGame={() => startGame()}
+          hideRoles={hideRoles}
         />
       );
     }

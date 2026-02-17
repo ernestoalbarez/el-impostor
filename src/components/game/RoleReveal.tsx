@@ -11,6 +11,7 @@ interface RoleRevealProps {
   revealedPlayerIds: Set<string>;
   onRevealPlayer: (playerId: string) => void;
   onStartGame: () => void;
+  hideRoles?: boolean;
 }
 
 const roleLabels: Record<RoleType, string> = {
@@ -25,7 +26,7 @@ const roleDescriptions: Record<RoleType, string> = {
   falseImpostor: 'Encuentra a los impostores (NO sos impostor)',
 };
 
-export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStartGame }: RoleRevealProps) => {
+export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStartGame, hideRoles = false }: RoleRevealProps) => {
   const [viewingPlayer, setViewingPlayer] = useState<Player | null>(null);
   const allRevealed = revealedPlayerIds.size === players.length;
 
@@ -44,8 +45,9 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
   const isImpostorRole = (role?: RoleType) => role === 'impostor';
 
   if (viewingPlayer) {
-    const displayRole = viewingPlayer.role ? roleLabels[viewingPlayer.role] : '';
-    const description = viewingPlayer.role ? roleDescriptions[viewingPlayer.role] : '';
+    const shouldShowRole = !hideRoles;
+    const displayRole = shouldShowRole && viewingPlayer.role ? roleLabels[viewingPlayer.role] : '';
+    const description = shouldShowRole && viewingPlayer.role ? roleDescriptions[viewingPlayer.role] : '';
     const isImpostor = isImpostorRole(viewingPlayer.role);
 
     return (
@@ -61,20 +63,30 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
           <p className="text-muted-foreground text-sm uppercase tracking-widest font-medium">{viewingPlayer.name}</p>
           <div className={cn(
             'p-8 rounded-3xl card-glass border-2',
+            hideRoles ? 'border-primary/40 glow-civil' :
             isImpostor ? 'border-impostor/40 glow-impostor' : 'border-civil/40 glow-civil'
           )}>
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="space-y-4">
-              <p className="text-xs text-muted-foreground uppercase tracking-widest">Tu rol es</p>
-              <h3 className={cn('text-4xl md:text-5xl font-display font-extrabold', isImpostor ? 'text-impostor' : 'text-civil')}>{displayRole}</h3>
-              <p className="text-muted-foreground text-sm">{description}</p>
-            </motion.div>
+            {shouldShowRole && (
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="space-y-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">Tu rol es</p>
+                <h3 className={cn('text-4xl md:text-5xl font-display font-extrabold', isImpostor ? 'text-impostor' : 'text-civil')}>{displayRole}</h3>
+                <p className="text-muted-foreground text-sm">{description}</p>
+              </motion.div>
+            )}
+            {hideRoles && (
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="space-y-4">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">Tu rol es</p>
+                <h3 className="text-4xl md:text-5xl font-display font-extrabold text-primary">???</h3>
+                <p className="text-muted-foreground text-sm">Tu rol se revelará durante la partida</p>
+              </motion.div>
+            )}
             {viewingPlayer.word && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-6 pt-6 border-t border-border/30">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Tu palabra</p>
                 <p className="text-2xl md:text-3xl font-display font-bold text-foreground">{viewingPlayer.word}</p>
               </motion.div>
             )}
-            {viewingPlayer.role === 'falseImpostor' && (
+            {!hideRoles && viewingPlayer.role === 'falseImpostor' && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-4 p-3 rounded-xl bg-accent/10 border border-accent/20">
                 <p className="text-xs text-accent font-medium">⚠️ Tu palabra es una pista, pero NO sos impostor</p>
               </motion.div>

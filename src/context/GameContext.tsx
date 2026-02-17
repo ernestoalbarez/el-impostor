@@ -83,18 +83,18 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setGameState(prev => {
       if (!prev) return null;
       const updatedPlayers = prev.config.players.map(p =>
-        p.id === playerId ? { ...p, isEliminated: true } : p
+        p.id === playerId ? { ...p, isEliminated: true, isRoleRevealed: true } : p
       );
       return {
         ...prev,
         config: { ...prev.config, players: updatedPlayers },
-        eliminatedPlayers: [...prev.eliminatedPlayers, player],
+        eliminatedPlayers: [...prev.eliminatedPlayers, { ...player, isEliminated: true, isRoleRevealed: true }],
       };
     });
 
     const remainingPlayers = gameState.config.players.filter(
       p => !p.isEliminated && p.id !== playerId
-    );
+    ).map(p => ({ ...p }));
     const result = checkVictoryCondition(remainingPlayers);
 
     if (result.gameOver) {
@@ -117,9 +117,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const remaining = gameState.config.players.filter(p => !p.isEliminated);
     const result = checkVictoryCondition(remaining);
 
-    if (gameState.timeRemaining <= 0) {
+    if (gameState.timeRemaining <= 0 && !result.gameOver) {
+      // Time's up: impostors win if any remain
       const impostors = remaining.filter(p => p.role === 'impostor').length;
       if (impostors > 0) return { gameOver: true, civilsWin: false };
+      return { gameOver: true, civilsWin: true };
     }
 
     return result;

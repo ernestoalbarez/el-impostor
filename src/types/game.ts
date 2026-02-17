@@ -8,6 +8,7 @@ export interface Player {
   role?: RoleType;
   word?: string;
   isEliminated: boolean;
+  isRoleRevealed: boolean;
 }
 
 export interface Word {
