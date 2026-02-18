@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { GameMode } from '@/types/game';
-import { Flame, Shuffle, Zap } from 'lucide-react';
+import { Users, Ghost, Flame } from 'lucide-react';
 
 interface GameModeCardProps {
   mode: GameMode;
@@ -12,8 +12,8 @@ interface GameModeCardProps {
 }
 
 const modeIcons: Record<GameMode, React.ReactNode> = {
-  classic: <Shuffle className="w-7 h-7" />,
-  chaos: <Zap className="w-7 h-7" />,
+  classic: <Users className="w-7 h-7" />,
+  chaos: <Ghost className="w-7 h-7" />,
   extreme: <Flame className="w-7 h-7" />,
 };
 
