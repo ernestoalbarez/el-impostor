@@ -42,16 +42,22 @@ Dependiendo del modo de juego, los jugadores pueden asumir distintos roles:
 
 ### Modo Clásico
 - Cantidad de impostores definida manualmente.
+- Los jugadores conocen su rol desde el inicio.
+- Experiencia directa y estratégica.
+
+### Modo Misterio
+- La app decide aleatoriamente cuántos impostores hay.
+- Los roles se asignan de forma aleatoria.
+- Ningún jugador conoce su rol al inicio.
+- Cada jugador recibe una palabra o pista sin saber qué rol ocupa.
+- Los roles se revelan únicamente cuando un jugador es eliminado.
+- Al finalizar la partida, se muestran todos los roles.
 
 ### Modo Caos
-- La app decide aleatoriamente cuántos impostores hay.
-- Puede haber incluso **0 impostores**.
-
-### Modo Caos Extremo
-- Nadie sabe cuántos impostores hay.
-- Los impostores no saben si están solos.
-- Las palabras pueden variar incluso entre civiles.
-- El caos es intencional y parte del diseño.
+- Incluye roles especiales como falso impostor e impostor sin palabra.
+- Puede haber variaciones de palabra incluso entre civiles.
+- Los impostores pueden no saber si están solos.
+- El diseño busca generar desorden intencional e incertidumbre constante.
 
 ---
 
