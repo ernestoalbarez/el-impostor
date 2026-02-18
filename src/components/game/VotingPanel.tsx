@@ -48,7 +48,7 @@ export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-muted-foreground mb-4">
         <UserX className="w-5 h-5" />
-        <span className="text-sm uppercase tracking-wider">Votación</span>
+        <span className="text-sm uppercase tracking-widest font-medium">Votación</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -60,16 +60,18 @@ export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => handlePlayerSelect(player)}
               className={cn(
-                'p-4 rounded-xl border-2 transition-all duration-200',
-                'bg-secondary/30 hover:bg-secondary/50',
+                'p-4 rounded-xl border transition-all duration-200',
+                'bg-secondary/20 hover:bg-secondary/40 backdrop-blur-sm',
                 selectedPlayer?.id === player.id
-                  ? 'border-impostor bg-impostor/10'
-                  : 'border-border/50 hover:border-primary/50'
+                  ? 'border-impostor/50 bg-impostor/10 ring-1 ring-impostor/30'
+                  : 'border-border/30 hover:border-primary/40'
               )}
             >
-              <span className="font-medium">{player.name}</span>
+              <span className="font-medium text-sm">{player.name}</span>
               {selectedPlayer?.id === player.id && (
                 <Check className="w-4 h-4 inline ml-2 text-impostor" />
               )}
@@ -81,7 +83,7 @@ export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
       <Button
         onClick={handleVote}
         disabled={!selectedPlayer}
-        className="w-full btn-fire"
+        className="w-full btn-fire rounded-xl h-11"
         size="lg"
       >
         <AlertTriangle className="w-5 h-5 mr-2" />
@@ -89,9 +91,9 @@ export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
       </Button>
 
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
-        <AlertDialogContent className="card-mystery border-impostor/30">
+        <AlertDialogContent className="card-glass border-impostor/30 rounded-2xl">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl font-display">
+            <AlertDialogTitle className="text-2xl font-display font-extrabold">
               ¿Eliminar a {selectedPlayer?.name}?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
@@ -99,13 +101,10 @@ export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-secondary hover:bg-secondary/80">
+            <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
               Cancelar
             </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmElimination}
-              className="btn-fire"
-            >
+            <AlertDialogAction onClick={confirmElimination} className="btn-fire rounded-xl">
               Confirmar eliminación
             </AlertDialogAction>
           </AlertDialogFooter>
