@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGame, GameProvider } from '@/context/GameContext';
 import { GameMode, Category } from '@/types/game';
+import { loadPlayers, savePlayers, loadConfig, saveConfig } from '@/engine/storageService';
 import { GameModeCard } from '@/components/game/GameModeCard';
 import { PlayerInput } from '@/components/game/PlayerInput';
 import { ThemeManager } from '@/components/game/ThemeManager';
@@ -42,10 +43,19 @@ const GameApp = () => {
 
   const [step, setStep] = useState<'mode' | 'players' | 'config' | 'game' | 'stats'>('mode');
   const [selectedMode, setSelectedMode] = useState<GameMode | null>(null);
-  const [players, setPlayers] = useState<string[]>([]);
-  const [impostorCount, setImpostorCount] = useState(1);
-  const [timerMinutes, setTimerMinutes] = useState(5);
+  const [players, setPlayers] = useState<string[]>(() => loadPlayers());
+  const [impostorCount, setImpostorCount] = useState(() => {
+    const saved = loadConfig();
+    return saved?.impostorCount ?? 1;
+  });
+  const [timerMinutes, setTimerMinutes] = useState(() => {
+    const saved = loadConfig();
+    return saved?.timerMinutes ?? 5;
+  });
   const [selectedCategories, setSelectedCategories] = useState<Category[]>(categories);
+
+  // Persist players whenever they change
+  useEffect(() => { savePlayers(players); }, [players]);
 
   const [eliminationResult, setEliminationResult] = useState<{
     player: any;
@@ -85,6 +95,12 @@ const GameApp = () => {
 
   const handleStartSetup = () => {
     if (selectedMode && selectedCategories.length > 0 && players.length >= 3) {
+      saveConfig({
+        lastMode: selectedMode,
+        impostorCount,
+        timerMinutes,
+        selectedCategoryIds: selectedCategories.map(c => c.id),
+      });
       initializeGame(selectedMode, players, impostorCount, timerMinutes, selectedCategories);
       setStep('game');
     }
@@ -184,11 +200,14 @@ const GameApp = () => {
         <div className="min-h-screen px-4 py-8 relative z-10">
           <BackgroundEffects />
           <div className="max-w-md mx-auto space-y-8 relative z-10">
-            <motion.div {...pageTransition} className="text-center space-y-2">
+            <motion.div {...pageTransition} className="text-center space-y-3">
               <h1 className="text-4xl font-display text-gradient-fire font-extrabold">El Impostor</h1>
-              <p className="text-sm text-muted-foreground">
-                Primer turno: <span className="text-foreground font-medium">{gameState.startingPlayer}</span>
-              </p>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">Primer turno</p>
+                <p className="text-3xl md:text-4xl font-display font-extrabold text-primary">
+                  {gameState.startingPlayer}
+                </p>
+              </div>
             </motion.div>
             <motion.div {...pageTransition} transition={{ delay: 0.1 }} className="card-glass rounded-2xl p-6">
               <GameTimer initialTime={gameState.config.timerMinutes * 60} onTimeUp={handleTimeUp} onTimeUpdate={updateTimer} />
@@ -250,9 +269,9 @@ const GameApp = () => {
 
               <div className="space-y-4">
                 {[
-                  { mode: 'classic' as GameMode, title: 'CLÁSICO', desc: 'Tú defines la cantidad de impostores. Deducción tradicional.' },
-                  { mode: 'chaos' as GameMode, title: 'CAOS', desc: 'La cantidad de impostores es aleatoria. Nadie sabe cuántos hay.' },
-                  { mode: 'extreme' as GameMode, title: '🔥 CAOS EXTREMO', desc: 'Roles especiales, falsos impostores, pistas secundarias. El caos total.' },
+                  { mode: 'classic' as GameMode, title: 'CLÁSICO', desc: 'Los jugadores conocen su rol desde el inicio. La cantidad de impostores se define manualmente. Civiles ganan si eliminan a todos los impostores.' },
+                  { mode: 'chaos' as GameMode, title: 'MISTERIO', desc: 'Roles e impostores asignados al azar. Nadie conoce su rol al inicio. Se revelan al ser eliminados o al finalizar la partida.' },
+                  { mode: 'extreme' as GameMode, title: '🔥 CAOS', desc: 'Roles especiales, falsos impostores y pistas secundarias. El caos total con condiciones de victoria actualizadas.' },
                 ].map((item, i) => (
                   <motion.div
                     key={item.mode}
@@ -301,8 +320,8 @@ const GameApp = () => {
                     selectedMode === 'extreme' && 'text-impostor'
                   )}>
                     {selectedMode === 'classic' && 'Clásico'}
-                    {selectedMode === 'chaos' && 'Caos'}
-                    {selectedMode === 'extreme' && '🔥 Caos Extremo'}
+                    {selectedMode === 'chaos' && 'Misterio'}
+                    {selectedMode === 'extreme' && '🔥 Caos'}
                   </span>
                 </p>
               </div>
