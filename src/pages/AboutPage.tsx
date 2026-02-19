@@ -51,23 +51,6 @@ const AboutPage = () => {
           </ul>
         </motion.div>
 
-        <motion.div {...pageTransition} transition={{ delay: 0.2 }} className="card-glass rounded-2xl p-6 space-y-4">
-          <div className="flex items-center gap-3 mb-2">
-            <Code2 className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-display font-bold text-foreground">Stack tecnológico</h2>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'shadcn/ui', 'Framer Motion'].map((tech) => (
-              <span
-                key={tech}
-                className="text-xs font-medium px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground border border-border/40"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </motion.div>
-
         <motion.div {...pageTransition} transition={{ delay: 0.25 }} className="card-glass rounded-2xl p-6 space-y-3">
           <div className="flex items-center gap-3 mb-2">
             <Shield className="w-5 h-5 text-accent" />
@@ -82,7 +65,7 @@ const AboutPage = () => {
 
         <motion.div {...pageTransition} transition={{ delay: 0.3 }} className="text-center py-4">
           <p className="text-xs text-muted-foreground">
-            Hecho con 🔥 por <span className="text-foreground font-semibold">El equipo de El Impostor</span>
+            Hecho con 🔥 por <span className="text-foreground font-semibold">Ernesto Albarez</span>
           </p>
         </motion.div>
       </div>

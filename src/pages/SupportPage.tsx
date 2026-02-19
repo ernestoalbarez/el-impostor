@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, Heart, Coffee, Bitcoin, Copy, CheckCheck } from 'lucide-react';
+import { ArrowLeft, Heart, Coffee, Coins, Copy, CheckCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { BackgroundEffects } from '@/components/game/BackgroundEffects';
 import { supportConfig } from '@/config/supportConfig';
+import { QRCodeSVG } from 'qrcode.react';
 
 const pageTransition = {
   initial: { opacity: 0, y: 20 },
@@ -20,6 +21,38 @@ const CryptoAddress = ({ label, network, address }: { label: string; network: st
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // --- PRO EIP-681 ERC20 URI ---
+  const getChainId = () => {
+    if (network.toLowerCase().includes('polygon')) return 137;
+    if (network.toLowerCase().includes('ethereum')) return 1;
+    return 1;
+  };
+
+  const getTokenContract = () => {
+    const token = label.toUpperCase();
+
+    // Ethereum Mainnet
+    if (network.toLowerCase().includes('ethereum')) {
+      if (token === 'USDC') return '0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+      if (token === 'USDT') return '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+    }
+
+    // Polygon Mainnet
+    if (network.toLowerCase().includes('polygon')) {
+      if (token === 'USDC') return '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+      if (token === 'USDT') return '0xc2132D05D31c914a87C6611C10748AaCb9e1aFaE';
+    }
+
+    return null;
+  };
+
+  const chainId = getChainId();
+  const tokenContract = getTokenContract();
+
+  const qrValue = tokenContract
+    ? `ethereum:${tokenContract}@${chainId}/transfer?address=${address}`
+    : `ethereum:${address}`;
 
   return (
     <div className="space-y-2">
@@ -37,9 +70,14 @@ const CryptoAddress = ({ label, network, address }: { label: string; network: st
           {copied ? <CheckCheck className="w-4 h-4 text-accent" /> : <Copy className="w-4 h-4" />}
         </Button>
       </div>
-      {/* Espacio reservado para QR */}
-      <div className="w-full h-24 rounded-lg border border-dashed border-border/40 flex items-center justify-center">
-        <span className="text-xs text-muted-foreground">QR próximamente</span>
+      <div className="w-full flex items-center justify-center bg-white p-3 rounded-lg">
+        <QRCodeSVG
+          value={qrValue}
+          size={140}
+          bgColor="#ffffff"
+          fgColor="#000000"
+          level="M"
+        />
       </div>
     </div>
   );
@@ -76,7 +114,7 @@ const SupportPage = () => {
         <motion.div {...pageTransition} transition={{ delay: 0.15 }} className="card-glass rounded-2xl p-6 space-y-4">
           <div className="flex items-center gap-3 mb-2">
             <Coffee className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-display font-bold text-foreground">MercadoPago</h2>
+            <h2 className="text-lg font-display font-bold text-foreground">Cafecito (MercadoPago)</h2>
           </div>
           <a
             href={supportConfig.mercadoPago.url}
@@ -93,19 +131,25 @@ const SupportPage = () => {
 
         <motion.div {...pageTransition} transition={{ delay: 0.2 }} className="card-glass rounded-2xl p-6 space-y-6">
           <div className="flex items-center gap-3 mb-2">
-            <Bitcoin className="w-5 h-5 text-warning" />
+            <Coins className="w-5 h-5 text-warning" />
             <h2 className="text-lg font-display font-bold text-foreground">Criptomonedas</h2>
           </div>
-          <CryptoAddress
-            label="USDT"
-            network={supportConfig.crypto.usdt.network}
-            address={supportConfig.crypto.usdt.address}
-          />
-          <CryptoAddress
-            label="BTC"
-            network={supportConfig.crypto.btc.network}
-            address={supportConfig.crypto.btc.address}
-          />
+          {Object.entries(supportConfig.crypto).map(([networkKey, network]) => (
+            <div key={networkKey} className="space-y-4">
+              <h3 className="text-sm font-semibold text-foreground">
+                {network.label}
+              </h3>
+
+              {Object.entries(network.tokens).map(([tokenKey, token]) => (
+                <CryptoAddress
+                  key={`${networkKey}-${tokenKey}`}
+                  label={tokenKey.toUpperCase()}
+                  network={token.network}
+                  address={token.address}
+                />
+              ))}
+            </div>
+          ))}
         </motion.div>
 
         <motion.div {...pageTransition} transition={{ delay: 0.25 }} className="text-center py-4">

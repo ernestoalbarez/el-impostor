@@ -273,7 +273,7 @@ const GameApp = () => {
                 {[
                   { mode: 'classic' as GameMode, title: 'CLÁSICO', desc: 'Los jugadores conocen su rol desde el inicio. La cantidad de impostores es definida manualmente por el anfitrión.' },
                   { mode: 'chaos' as GameMode, title: 'MISTERIO', desc: 'Roles e impostores asignados al azar. Nadie conoce su rol al inicio. Los roles se revelan al ser eliminados y al finalizar la partida se muestran todos.' },
-                  { mode: 'extreme' as GameMode, title: '🔥 CAOS', desc: 'Roles especiales, falsos impostores y pistas secundarias. El caos total donde nada es lo que parece.' },
+                  { mode: 'extreme' as GameMode, title: 'CAOS', desc: 'Roles especiales, falsos impostores y pistas secundarias. El caos total donde nada es lo que parece.' },
                 ].map((item, i) => (
                   <motion.div
                     key={item.mode}

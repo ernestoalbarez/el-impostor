@@ -1,16 +1,24 @@
+const walletAddress = '0x505Ce514Ff1e02d3Af1474C3684adC98A9F5Fa22';
+
 export const supportConfig = {
   mercadoPago: {
     label: 'Invitame un café ☕',
-    url: 'https://cafecito.app/tu-usuario', // Reemplazar con tu link real
+    url: 'https://cafecito.app/ernesto-albarez',
   },
   crypto: {
-    usdt: {
-      network: 'TRC20',
-      address: 'TU_DIRECCION_USDT_TRC20', // Reemplazar con tu dirección real
+    polygon: {
+      label: 'Polygon (Recomendado - fees bajos)',
+      tokens: {
+        usdc: { network: 'Polygon', address: walletAddress },
+        usdt: { network: 'Polygon', address: walletAddress },
+      },
     },
-    btc: {
-      network: 'Bitcoin',
-      address: 'TU_DIRECCION_BTC', // Reemplazar con tu dirección real
+    ethereum: {
+      label: 'Ethereum (ERC-20)',
+      tokens: {
+        usdc: { network: 'Ethereum', address: walletAddress },
+        usdt: { network: 'Ethereum', address: walletAddress },
+      },
     },
   },
 };
