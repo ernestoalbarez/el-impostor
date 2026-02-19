@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useGame, GameProvider } from '@/context/GameContext';
 import { GameMode, Category } from '@/types/game';
 import { loadPlayers, savePlayers, loadConfig, saveConfig } from '@/engine/storageService';
@@ -16,7 +17,7 @@ import { BackgroundEffects } from '@/components/game/BackgroundEffects';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { ArrowLeft, ArrowRight, Play, Skull, BarChart3 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Play, Skull, BarChart3, Info, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const pageTransition = {
@@ -27,6 +28,7 @@ const pageTransition = {
 };
 
 const GameApp = () => {
+  const navigate = useNavigate();
   const {
     gameState,
     categories,
@@ -293,14 +295,31 @@ const GameApp = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
+                className="space-y-2"
               >
                 <Button
                   variant="outline"
-                  className="w-full mt-2 border-border/40 hover:bg-secondary/50 hover:border-border/60 transition-all"
+                  className="w-full border-border/40 hover:bg-secondary/50 hover:border-border/60 transition-all"
                   onClick={() => setStep('stats')}
                 >
                   <BarChart3 className="w-4 h-4 mr-2" />Estadísticas
                 </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    className="flex-1 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+                    onClick={() => navigate('/about')}
+                  >
+                    <Info className="w-4 h-4 mr-2" />Acerca de
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="flex-1 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
+                    onClick={() => navigate('/support')}
+                  >
+                    <Heart className="w-4 h-4 mr-2" />Apoyar
+                  </Button>
+                </div>
               </motion.div>
             </motion.div>
           )}
