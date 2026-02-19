@@ -160,4 +160,32 @@ Esto significa que podés:
 
 Siempre que incluyas el aviso de copyright y la licencia original.
 
+---
+
+## ☕ Support / Contribuciones
+
+El proyecto se mantiene sin publicidad ni funciones bloqueadas.  
+Si querés ayudar a cubrir costos de hosting, dominio y mantenimiento, podés hacerlo de forma voluntaria.
+
+### MercadoPago / Cafecito
+Podés colaborar mediante MercadoPago desde la página de soporte dentro de la aplicación.
+
+### Criptomonedas (ERC‑20)
+
+Se aceptan:
+
+- **USDC**
+- **USDT**
+
+Redes soportadas:
+- Ethereum (Mainnet)
+- Polygon
+
+La aplicación incluye:
+- Dirección pública visible
+- Botón de copiado rápido
+- QR compatible con estándar **EIP‑681** para abrir directamente el token correcto en wallets como MetaMask
+
+Las contribuciones son completamente opcionales y solo buscan cubrir costos operativos.
+
 © 2026 Ernesto Albarez
