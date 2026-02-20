@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useGame, GameProvider } from '@/context/GameContext';
 import { GameMode, Category } from '@/types/game';
-import { loadPlayers, savePlayers, loadConfig, saveConfig } from '@/engine/storageService';
+import { loadPlayers, savePlayers, loadConfig, saveConfig, incrementGameCount } from '@/engine/storageService';
 import { GameModeCard } from '@/components/game/GameModeCard';
 import { PlayerInput } from '@/components/game/PlayerInput';
 import { ThemeManager } from '@/components/game/ThemeManager';
@@ -119,13 +119,17 @@ const GameApp = () => {
   const handleContinueAfterElimination = () => {
     if (eliminationResult?.gameOver) {
       setGameEnded({ civilsWin: eliminationResult.civilsWin });
+      incrementGameCount();
     }
     setEliminationResult(null);
   };
 
   const handleTimeUp = () => {
     const result = checkVictory();
-    if (result.gameOver) setGameEnded({ civilsWin: result.civilsWin });
+    if (result.gameOver) {
+      setGameEnded({ civilsWin: result.civilsWin });
+      incrementGameCount();
+    }
   };
 
   const handlePlayAgain = () => {
