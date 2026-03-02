@@ -94,7 +94,7 @@ export const GameTimer = ({
             isCriticalTime ? 'text-impostor animate-pulse' : 
             isLowTime ? 'text-warning' : 'text-muted-foreground'
           )} />
-          <span className="text-xs text-muted-foreground uppercase tracking-widest font-medium">
+          <span className="text-sm text-foreground/60 uppercase tracking-widest font-semibold">
             Tiempo restante
           </span>
         </div>
@@ -110,7 +110,7 @@ export const GameTimer = ({
 
       <motion.div
         className={cn(
-          'text-6xl md:text-7xl font-display font-extrabold text-center tabular-nums tracking-tight',
+          'text-6xl md:text-7xl font-display font-black text-center tabular-nums tracking-tight drop-shadow-lg',
           isCriticalTime ? 'text-impostor' : 
           isLowTime ? 'text-warning' : 'text-foreground'
         )}
@@ -120,7 +120,7 @@ export const GameTimer = ({
         {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
       </motion.div>
 
-      <div className="h-1.5 bg-secondary/50 rounded-full overflow-hidden">
+      <div className="h-2 bg-secondary/60 rounded-full overflow-hidden">
         <motion.div
           className={cn(
             'h-full rounded-full',

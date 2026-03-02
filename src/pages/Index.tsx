@@ -238,8 +238,8 @@ const GameApp = () => {
           <div className="max-w-md mx-auto space-y-8 relative z-10">
             <motion.div {...pageTransition} className="text-center space-y-3">
               <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Primer turno</p>
-                <p className="text-3xl md:text-4xl font-display font-extrabold text-primary">
+                <p className="text-sm text-foreground/70 uppercase tracking-widest font-semibold">Primer turno</p>
+                <p className="text-3xl md:text-4xl font-display font-extrabold text-gradient-fire drop-shadow-lg">
                   {gameState.startingPlayer}
                 </p>
               </div>
@@ -247,9 +247,9 @@ const GameApp = () => {
             <motion.div {...pageTransition} transition={{ delay: 0.1 }} className="card-glass rounded-2xl p-6">
               <GameTimer initialTime={gameState.config.timerMinutes * 60} onTimeUp={handleTimeUp} onTimeUpdate={updateTimer} />
             </motion.div>
-            <motion.div {...pageTransition} transition={{ delay: 0.15 }} className="flex items-center justify-center gap-2 text-muted-foreground">
+            <motion.div {...pageTransition} transition={{ delay: 0.15 }} className="flex items-center justify-center gap-2 text-foreground/60">
               <Skull className="w-5 h-5" />
-              <span className="text-sm font-medium">{gameState.config.players.filter(p => !p.isEliminated).length} jugadores restantes</span>
+              <span className="text-sm font-semibold">{gameState.config.players.filter(p => !p.isEliminated).length} jugadores restantes</span>
             </motion.div>
             <motion.div {...pageTransition} transition={{ delay: 0.2 }} className="card-glass rounded-2xl p-6">
               <VotingPanel players={gameState.config.players} onEliminate={handleEliminate} />
