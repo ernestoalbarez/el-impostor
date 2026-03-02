@@ -17,8 +17,19 @@ import { BackgroundEffects } from '@/components/game/BackgroundEffects';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { ArrowLeft, ArrowRight, Play, Skull, BarChart3, Info, Heart } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { ArrowLeft, ArrowRight, Play, Skull, BarChart3, Info, Heart, RotateCcw, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 const pageTransition = {
   initial: { opacity: 0, y: 20, scale: 0.98 },
@@ -41,6 +52,9 @@ const GameApp = () => {
     updateTimer,
     checkVictory,
     resetGame,
+    restartRound,
+    handleImpostorGuess,
+    canImpostorGuessNow,
   } = useGame();
 
   const [step, setStep] = useState<'mode' | 'players' | 'config' | 'game' | 'stats'>('mode');
@@ -55,8 +69,8 @@ const GameApp = () => {
     return saved?.timerMinutes ?? 5;
   });
   const [selectedCategories, setSelectedCategories] = useState<Category[]>(categories);
+  const [hideImpostorHint, setHideImpostorHint] = useState(false);
 
-  // Persist players whenever they change
   useEffect(() => { savePlayers(players); }, [players]);
 
   const [eliminationResult, setEliminationResult] = useState<{
@@ -67,6 +81,8 @@ const GameApp = () => {
   } | null>(null);
 
   const [gameEnded, setGameEnded] = useState<{ civilsWin: boolean } | null>(null);
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false);
+  const [showImpostorGuessConfirm, setShowImpostorGuessConfirm] = useState(false);
 
   const handleSelectMode = (mode: GameMode) => {
     setSelectedMode(mode);
@@ -103,7 +119,7 @@ const GameApp = () => {
         timerMinutes,
         selectedCategoryIds: selectedCategories.map(c => c.id),
       });
-      initializeGame(selectedMode, players, impostorCount, timerMinutes, selectedCategories);
+      initializeGame(selectedMode, players, impostorCount, timerMinutes, selectedCategories, hideImpostorHint);
       setStep('game');
     }
   };
@@ -126,6 +142,20 @@ const GameApp = () => {
 
   const handleTimeUp = () => {
     const result = checkVictory();
+    if (result.gameOver) {
+      setGameEnded({ civilsWin: result.civilsWin });
+      incrementGameCount();
+    }
+  };
+
+  const handleRestartRound = () => {
+    setShowRestartConfirm(false);
+    restartRound();
+  };
+
+  const handleImpostorGuessConfirm = () => {
+    setShowImpostorGuessConfirm(false);
+    const result = handleImpostorGuess();
     if (result.gameOver) {
       setGameEnded({ civilsWin: result.civilsWin });
       incrementGameCount();
@@ -207,7 +237,6 @@ const GameApp = () => {
           <BackgroundEffects />
           <div className="max-w-md mx-auto space-y-8 relative z-10">
             <motion.div {...pageTransition} className="text-center space-y-3">
-              <h1 className="text-4xl font-display text-gradient-fire font-extrabold">El Impostor</h1>
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Primer turno</p>
                 <p className="text-3xl md:text-4xl font-display font-extrabold text-primary">
@@ -225,7 +254,77 @@ const GameApp = () => {
             <motion.div {...pageTransition} transition={{ delay: 0.2 }} className="card-glass rounded-2xl p-6">
               <VotingPanel players={gameState.config.players} onEliminate={handleEliminate} />
             </motion.div>
+
+            {/* Impostor guessed word button */}
+            {canImpostorGuessNow() && (
+              <motion.div {...pageTransition} transition={{ delay: 0.25 }}>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowImpostorGuessConfirm(true)}
+                  className="w-full rounded-xl h-11 border-impostor/30 text-impostor hover:bg-impostor/10 hover:border-impostor/50"
+                >
+                  <Lightbulb className="w-5 h-5 mr-2" />
+                  Impostor adivinó la palabra
+                </Button>
+              </motion.div>
+            )}
+
+            {/* Restart round button */}
+            <motion.div {...pageTransition} transition={{ delay: 0.3 }}>
+              <Button
+                variant="ghost"
+                onClick={() => setShowRestartConfirm(true)}
+                className="w-full rounded-xl h-10 text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Reiniciar ronda
+              </Button>
+            </motion.div>
           </div>
+
+          {/* Restart round confirmation */}
+          <AlertDialog open={showRestartConfirm} onOpenChange={setShowRestartConfirm}>
+            <AlertDialogContent className="card-glass border-border/30 rounded-2xl">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-2xl font-display font-extrabold">
+                  ¿Reiniciar ronda?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-muted-foreground">
+                  Se reasignarán roles, palabras y se reiniciará el timer. Las estadísticas y el historial se mantienen.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
+                  Cancelar
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={handleRestartRound} className="btn-fire rounded-xl">
+                  Reiniciar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          {/* Impostor guess confirmation */}
+          <AlertDialog open={showImpostorGuessConfirm} onOpenChange={setShowImpostorGuessConfirm}>
+            <AlertDialogContent className="card-glass border-impostor/30 rounded-2xl">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-2xl font-display font-extrabold text-impostor">
+                  ¿El impostor adivinó la palabra?
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-muted-foreground">
+                  La partida terminará y se declarará victoria del equipo impostor. Esta acción no se puede deshacer.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
+                  Cancelar
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={handleImpostorGuessConfirm} className="bg-impostor hover:bg-impostor/90 rounded-xl text-white">
+                  Confirmar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       );
     }
@@ -366,14 +465,25 @@ const GameApp = () => {
                 <h2 className="text-3xl font-display font-extrabold text-foreground">Configuración</h2>
               </div>
               {selectedMode === 'classic' && (
-                <div className="card-glass rounded-2xl p-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <Label className="text-sm text-muted-foreground">Cantidad de impostores</Label>
-                    <span className="text-2xl font-display font-extrabold text-impostor">{impostorCount}</span>
+                <>
+                  <div className="card-glass rounded-2xl p-6 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm text-muted-foreground">Cantidad de impostores</Label>
+                      <span className="text-2xl font-display font-extrabold text-impostor">{impostorCount}</span>
+                    </div>
+                    <Slider value={[impostorCount]} onValueChange={([v]) => setImpostorCount(v)} min={1} max={Math.max(1, Math.floor(players.length / 2))} step={1} className="w-full" />
+                    <p className="text-xs text-muted-foreground">Máximo: {Math.floor(players.length / 2)} para {players.length} jugadores</p>
                   </div>
-                  <Slider value={[impostorCount]} onValueChange={([v]) => setImpostorCount(v)} min={1} max={Math.max(1, Math.floor(players.length / 2))} step={1} className="w-full" />
-                  <p className="text-xs text-muted-foreground">Máximo: {Math.floor(players.length / 2)} para {players.length} jugadores</p>
-                </div>
+                  <div className="card-glass rounded-2xl p-6">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <Label className="text-sm font-medium text-foreground">Ocultar pista a impostores</Label>
+                        <p className="text-xs text-muted-foreground">Los impostores no recibirán palabra y deberán improvisar</p>
+                      </div>
+                      <Switch checked={hideImpostorHint} onCheckedChange={setHideImpostorHint} />
+                    </div>
+                  </div>
+                </>
               )}
               <div className="card-glass rounded-2xl p-6 space-y-4">
                 <div className="flex items-center justify-between">
