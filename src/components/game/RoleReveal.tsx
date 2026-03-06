@@ -60,7 +60,7 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
           transition={{ type: 'spring', damping: 20 }}
           className="text-center space-y-6 w-full max-w-sm relative z-10"
         >
-          <p className="text-muted-foreground text-sm uppercase tracking-widest font-medium">{viewingPlayer.name}</p>
+          <p className="text-foreground/70 text-sm uppercase tracking-widest font-bold">{viewingPlayer.name}</p>
           <div className={cn(
             'p-8 rounded-3xl card-glass border-2',
             hideRoles ? 'border-primary/40 glow-civil' :
@@ -68,22 +68,22 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
           )}>
             {shouldShowRole && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="space-y-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Tu rol es</p>
-                <h3 className={cn('text-4xl md:text-5xl font-display font-extrabold', isImpostor ? 'text-impostor' : 'text-civil')}>{displayRole}</h3>
-                <p className="text-muted-foreground text-sm">{description}</p>
+                <p className="text-sm text-foreground/60 uppercase tracking-widest font-semibold">Tu rol es</p>
+                <h3 className={cn('text-4xl md:text-5xl font-display font-black drop-shadow-lg', isImpostor ? 'text-impostor' : 'text-civil')}>{displayRole}</h3>
+                <p className="text-foreground/50 text-sm font-medium">{description}</p>
               </motion.div>
             )}
             {hideRoles && (
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }} className="space-y-4">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Tu rol es</p>
-                <h3 className="text-4xl md:text-5xl font-display font-extrabold text-primary">???</h3>
-                <p className="text-muted-foreground text-sm">Tu rol se revelará durante la partida</p>
+                <p className="text-sm text-foreground/60 uppercase tracking-widest font-semibold">Tu rol es</p>
+                <h3 className="text-4xl md:text-5xl font-display font-black text-primary drop-shadow-lg">???</h3>
+                <p className="text-foreground/50 text-sm font-medium">Tu rol se revelará durante la partida</p>
               </motion.div>
             )}
             {viewingPlayer.word && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-6 pt-6 border-t border-border/30">
-                <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Tu palabra</p>
-                <p className="text-2xl md:text-3xl font-display font-bold text-foreground">{viewingPlayer.word}</p>
+                <p className="text-sm text-foreground/60 uppercase tracking-widest mb-2 font-semibold">Tu palabra</p>
+                <p className="text-2xl md:text-3xl font-display font-black text-foreground drop-shadow-md">{viewingPlayer.word}</p>
               </motion.div>
             )}
             {!hideRoles && viewingPlayer.role === 'falseImpostor' && (

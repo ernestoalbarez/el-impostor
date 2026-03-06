@@ -36,3 +36,20 @@ export function checkVictoryCondition(players: Player[]): VictoryResult {
   }
   return { gameOver: false, civilsWin: false };
 }
+
+/**
+ * Check if impostor guess victory is possible (at least one alive impostor).
+ */
+export function canImpostorGuess(players: Player[]): boolean {
+  return getAliveImpostors(players).length > 0;
+}
+
+/**
+ * Impostor guessed the word — impostors win.
+ */
+export function impostorGuessedWord(players: Player[]): VictoryResult {
+  if (!canImpostorGuess(players)) {
+    return { gameOver: false, civilsWin: false };
+  }
+  return { gameOver: true, civilsWin: false };
+}

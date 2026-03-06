@@ -18,12 +18,14 @@ function shuffle<T>(arr: T[]): T[] {
 
 /**
  * Assign roles and words to players based on game mode — O(n)
+ * @param hideImpostorHint - If true (classic mode option), impostors get no word at all.
  */
 export function assignRoles(
   playerNames: string[],
   mode: GameMode,
   requestedImpostors: number,
-  word: Word
+  word: Word,
+  hideImpostorHint: boolean = false
 ): AssignmentResult {
   const n = playerNames.length;
   let impostorCount: number;
@@ -67,8 +69,10 @@ export function assignRoles(
   for (let i = 0; i < impostorCount; i++) {
     const pi = indices[idx++];
     players[pi].role = 'impostor';
-    if (mode === 'extreme') {
-      // Each impostor independently evaluates secondary hint probability
+    if (hideImpostorHint && mode === 'classic') {
+      // No word for impostors when hint is hidden
+      players[pi].word = undefined;
+    } else if (mode === 'extreme') {
       const useSecondary = Math.random() < gameConfig.probabilidadSecundaria;
       players[pi].word = getImpostorHint(word, useSecondary);
     } else {
