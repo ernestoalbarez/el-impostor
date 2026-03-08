@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useGame, GameProvider } from '@/context/GameContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { GameMode, Category } from '@/types/game';
 import { loadPlayers, savePlayers, loadConfig, saveConfig, incrementGameCount } from '@/engine/storageService';
 import { GameModeCard } from '@/components/game/GameModeCard';
@@ -14,6 +15,7 @@ import { EliminationResult } from '@/components/game/EliminationResult';
 import { GameEnd } from '@/components/game/GameEnd';
 import { StatsPanel } from '@/components/game/StatsPanel';
 import { BackgroundEffects } from '@/components/game/BackgroundEffects';
+import { LanguageSelector } from '@/components/game/LanguageSelector';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
@@ -40,6 +42,7 @@ const pageTransition = {
 
 const GameApp = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const {
     gameState,
     categories,
@@ -227,6 +230,7 @@ const GameApp = () => {
           onRevealPlayer={revealPlayer}
           onStartGame={() => startGame()}
           onRestartRound={restartRound}
+          onGoHome={handleGoHome}
           hideRoles={hideRoles}
         />
       );
@@ -239,7 +243,7 @@ const GameApp = () => {
           <div className="max-w-md mx-auto space-y-8 relative z-10">
             <motion.div {...pageTransition} className="text-center space-y-3">
               <div className="space-y-1">
-                <p className="text-sm text-foreground/70 uppercase tracking-widest font-semibold">Primer turno</p>
+                <p className="text-sm text-foreground/70 uppercase tracking-widest font-semibold">{t('first_turn')}</p>
                 <p className="text-3xl md:text-4xl font-display font-extrabold text-gradient-fire drop-shadow-lg">
                   {gameState.startingPlayer}
                 </p>
@@ -250,13 +254,12 @@ const GameApp = () => {
             </motion.div>
             <motion.div {...pageTransition} transition={{ delay: 0.15 }} className="flex items-center justify-center gap-2 text-foreground/60">
               <Skull className="w-5 h-5" />
-              <span className="text-sm font-semibold">{gameState.config.players.filter(p => !p.isEliminated).length} jugadores restantes</span>
+              <span className="text-sm font-semibold">{gameState.config.players.filter(p => !p.isEliminated).length} {t('remaining_players')}</span>
             </motion.div>
             <motion.div {...pageTransition} transition={{ delay: 0.2 }} className="card-glass rounded-2xl p-6">
               <VotingPanel players={gameState.config.players} onEliminate={handleEliminate} />
             </motion.div>
 
-            {/* Impostor guessed word button */}
             {canImpostorGuessNow() && (
               <motion.div {...pageTransition} transition={{ delay: 0.25 }}>
                 <Button
@@ -265,12 +268,11 @@ const GameApp = () => {
                   className="w-full rounded-xl h-11 border-impostor/30 text-impostor hover:bg-impostor/10 hover:border-impostor/50"
                 >
                   <Lightbulb className="w-5 h-5 mr-2" />
-                  Impostor adivinó la palabra
+                  {t('impostor_guessed_word')}
                 </Button>
               </motion.div>
             )}
 
-            {/* Restart round button */}
             <motion.div {...pageTransition} transition={{ delay: 0.3 }}>
               <Button
                 variant="ghost"
@@ -278,50 +280,48 @@ const GameApp = () => {
                 className="w-full rounded-xl h-10 text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
-                Reiniciar ronda
+                {t('restart_round')}
               </Button>
             </motion.div>
           </div>
 
-          {/* Restart round confirmation */}
           <AlertDialog open={showRestartConfirm} onOpenChange={setShowRestartConfirm}>
             <AlertDialogContent className="card-glass border-border/30 rounded-2xl">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-2xl font-display font-extrabold">
-                  ¿Reiniciar ronda?
+                  {t('restart_round_title')}
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-muted-foreground">
-                  Se reasignarán roles, palabras y se reiniciará el timer. Las estadísticas y el historial se mantienen.
+                  {t('restart_round_desc')}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
-                  Cancelar
+                  {t('cancel')}
                 </AlertDialogCancel>
                 <AlertDialogAction onClick={handleRestartRound} className="btn-fire rounded-xl">
-                  Reiniciar
+                  {t('restart')}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
 
-          {/* Impostor guess confirmation */}
           <AlertDialog open={showImpostorGuessConfirm} onOpenChange={setShowImpostorGuessConfirm}>
             <AlertDialogContent className="card-glass border-impostor/30 rounded-2xl">
               <AlertDialogHeader>
                 <AlertDialogTitle className="text-2xl font-display font-extrabold text-impostor">
-                  ¿El impostor adivinó la palabra?
+                  {t('impostor_guess_title')}
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-muted-foreground">
-                  La partida terminará y se declarará victoria del equipo impostor. Esta acción no se puede deshacer.
+                  {t('impostor_guess_desc')}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
-                  Cancelar
+                  {t('cancel')}
                 </AlertDialogCancel>
                 <AlertDialogAction onClick={handleImpostorGuessConfirm} className="bg-impostor hover:bg-impostor/90 rounded-xl text-white">
-                  Confirmar
+                  {t('confirm')}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -338,13 +338,19 @@ const GameApp = () => {
         <BackgroundEffects />
         <div className="max-w-md mx-auto space-y-6 relative z-10">
           <Button variant="ghost" onClick={() => setStep('mode')} className="mb-4 hover:bg-secondary/50">
-            <ArrowLeft className="w-4 h-4 mr-2" />Volver
+            <ArrowLeft className="w-4 h-4 mr-2" />{t('back')}
           </Button>
           <StatsPanel />
         </div>
       </div>
     );
   }
+
+  const modeNames: Record<string, string> = {
+    classic: t('mode_classic'),
+    chaos: t('mode_mystery'),
+    extreme: t('mode_chaos'),
+  };
 
   return (
     <div className="min-h-screen px-4 py-8 relative z-10">
@@ -354,6 +360,9 @@ const GameApp = () => {
           {step === 'mode' && (
             <motion.div key="mode" {...pageTransition} className="space-y-6">
               <div className="text-center mb-10 pt-8">
+                <div className="flex justify-end mb-4">
+                  <LanguageSelector />
+                </div>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -369,15 +378,15 @@ const GameApp = () => {
                   transition={{ delay: 0.3 }}
                   className="text-muted-foreground text-sm tracking-widest uppercase"
                 >
-                  El caos es diseño intencional
+                  {t('home_subtitle')}
                 </motion.p>
               </div>
 
               <div className="space-y-4">
                 {[
-                  { mode: 'classic' as GameMode, title: 'CLÁSICO', desc: 'Los jugadores conocen su rol desde el inicio. La cantidad de impostores es definida manualmente por el anfitrión.' },
-                  { mode: 'chaos' as GameMode, title: 'MISTERIO', desc: 'Roles e impostores asignados al azar. Nadie conoce su rol al inicio. Los roles se revelan al ser eliminados y al finalizar la partida se muestran todos.' },
-                  { mode: 'extreme' as GameMode, title: 'CAOS', desc: 'Roles especiales, falsos impostores y pistas secundarias. El caos total donde nada es lo que parece.' },
+                  { mode: 'classic' as GameMode, title: t('mode_classic'), desc: t('mode_classic_desc') },
+                  { mode: 'chaos' as GameMode, title: t('mode_mystery'), desc: t('mode_mystery_desc') },
+                  { mode: 'extreme' as GameMode, title: t('mode_chaos'), desc: t('mode_chaos_desc') },
                 ].map((item, i) => (
                   <motion.div
                     key={item.mode}
@@ -406,7 +415,7 @@ const GameApp = () => {
                   className="w-full border-border/40 hover:bg-secondary/50 hover:border-border/60 transition-all"
                   onClick={() => setStep('stats')}
                 >
-                  <BarChart3 className="w-4 h-4 mr-2" />Estadísticas
+                  <BarChart3 className="w-4 h-4 mr-2" />{t('stats')}
                 </Button>
                 <div className="flex gap-2">
                   <Button
@@ -414,14 +423,14 @@ const GameApp = () => {
                     className="flex-1 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
                     onClick={() => navigate('/about')}
                   >
-                    <Info className="w-4 h-4 mr-2" />Acerca de
+                    <Info className="w-4 h-4 mr-2" />{t('about')}
                   </Button>
                   <Button
                     variant="ghost"
                     className="flex-1 text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
                     onClick={() => navigate('/support')}
                   >
-                    <Heart className="w-4 h-4 mr-2" />Apoyar
+                    <Heart className="w-4 h-4 mr-2" />{t('support')}
                   </Button>
                 </div>
               </motion.div>
@@ -431,20 +440,18 @@ const GameApp = () => {
           {step === 'players' && (
             <motion.div key="players" {...pageTransition} className="space-y-8">
               <Button variant="ghost" onClick={() => setStep('mode')} className="mb-2 hover:bg-secondary/50">
-                <ArrowLeft className="w-4 h-4 mr-2" />Volver
+                <ArrowLeft className="w-4 h-4 mr-2" />{t('back')}
               </Button>
               <div className="text-center mb-6">
-                <h2 className="text-3xl font-display font-extrabold text-foreground mb-2">Jugadores</h2>
+                <h2 className="text-3xl font-display font-extrabold text-foreground mb-2">{t('players')}</h2>
                 <p className="text-sm text-muted-foreground">
-                  Modo: <span className={cn(
+                  {t('mode_label')}: <span className={cn(
                     'font-semibold',
                     selectedMode === 'classic' && 'text-primary',
                     selectedMode === 'chaos' && 'text-accent',
                     selectedMode === 'extreme' && 'text-impostor'
                   )}>
-                    {selectedMode === 'classic' && 'Clásico'}
-                    {selectedMode === 'chaos' && 'Misterio'}
-                    {selectedMode === 'extreme' && '🔥 Caos'}
+                    {selectedMode ? modeNames[selectedMode] : ''}
                   </span>
                 </p>
               </div>
@@ -452,7 +459,7 @@ const GameApp = () => {
                 <PlayerInput players={players} onAddPlayer={handleAddPlayer} onRemovePlayer={handleRemovePlayer} minPlayers={3} />
               </div>
               <Button onClick={() => setStep('config')} disabled={players.length < 3} className="w-full btn-fire rounded-xl h-12 text-base" size="lg">
-                Continuar<ArrowRight className="w-5 h-5 ml-2" />
+                {t('continue')}<ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
           )}
@@ -460,26 +467,26 @@ const GameApp = () => {
           {step === 'config' && (
             <motion.div key="config" {...pageTransition} className="space-y-8">
               <Button variant="ghost" onClick={() => setStep('players')} className="mb-2 hover:bg-secondary/50">
-                <ArrowLeft className="w-4 h-4 mr-2" />Volver
+                <ArrowLeft className="w-4 h-4 mr-2" />{t('back')}
               </Button>
               <div className="text-center mb-6">
-                <h2 className="text-3xl font-display font-extrabold text-foreground">Configuración</h2>
+                <h2 className="text-3xl font-display font-extrabold text-foreground">{t('config_title')}</h2>
               </div>
               {selectedMode === 'classic' && (
                 <>
                   <div className="card-glass rounded-2xl p-6 space-y-4">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm text-muted-foreground">Cantidad de impostores</Label>
+                      <Label className="text-sm text-muted-foreground">{t('impostor_count')}</Label>
                       <span className="text-2xl font-display font-extrabold text-impostor">{impostorCount}</span>
                     </div>
                     <Slider value={[impostorCount]} onValueChange={([v]) => setImpostorCount(v)} min={1} max={Math.max(1, Math.floor(players.length / 2))} step={1} className="w-full" />
-                    <p className="text-xs text-muted-foreground">Máximo: {Math.floor(players.length / 2)} para {players.length} jugadores</p>
+                    <p className="text-xs text-muted-foreground">{t('max_for_players', { max: Math.floor(players.length / 2), count: players.length })}</p>
                   </div>
                   <div className="card-glass rounded-2xl p-6">
                     <div className="flex items-center justify-between gap-4">
                       <div className="space-y-1">
-                        <Label className="text-sm font-medium text-foreground">Ocultar pista a impostores</Label>
-                        <p className="text-xs text-muted-foreground">Los impostores no recibirán palabra y deberán improvisar</p>
+                        <Label className="text-sm font-medium text-foreground">{t('hide_impostor_hint')}</Label>
+                        <p className="text-xs text-muted-foreground">{t('hide_impostor_hint_desc')}</p>
                       </div>
                       <Switch checked={hideImpostorHint} onCheckedChange={setHideImpostorHint} />
                     </div>
@@ -488,8 +495,8 @@ const GameApp = () => {
               )}
               <div className="card-glass rounded-2xl p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm text-muted-foreground">Duración de la partida</Label>
-                  <span className="text-2xl font-display font-extrabold text-primary">{timerMinutes} min</span>
+                  <Label className="text-sm text-muted-foreground">{t('game_duration')}</Label>
+                  <span className="text-2xl font-display font-extrabold text-primary">{timerMinutes} {t('min_label')}</span>
                 </div>
                 <Slider value={[timerMinutes]} onValueChange={([v]) => setTimerMinutes(v)} min={2} max={15} step={1} className="w-full" />
               </div>
@@ -505,7 +512,7 @@ const GameApp = () => {
                 />
               </div>
               <Button onClick={handleStartSetup} disabled={selectedCategories.length === 0} className="w-full btn-fire rounded-xl h-12 text-base" size="lg">
-                <Play className="w-5 h-5 mr-2" />Iniciar partida
+                <Play className="w-5 h-5 mr-2" />{t('start_game')}
               </Button>
             </motion.div>
           )}

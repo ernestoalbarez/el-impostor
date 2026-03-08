@@ -6,8 +6,10 @@ import { BackgroundEffects } from './BackgroundEffects';
 import { Button } from '@/components/ui/button';
 import { BarChart3, Trash2, Trophy, Shield, Skull, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/context/LanguageContext';
 
 export const StatsPanel = () => {
+  const { t } = useLanguage();
   const [stats, setStats] = useState<StatsRecord>({});
 
   useEffect(() => {
@@ -25,15 +27,15 @@ export const StatsPanel = () => {
     <div className="space-y-6 relative z-10">
       <BackgroundEffects />
       <div className="text-center space-y-2 relative z-10">
-        <h2 className="text-3xl font-display font-extrabold text-gradient-fire">Estadísticas</h2>
-        <p className="text-sm text-muted-foreground">Historial de partidas</p>
+        <h2 className="text-3xl font-display font-extrabold text-gradient-fire">{t('stats_title')}</h2>
+        <p className="text-sm text-muted-foreground">{t('game_history')}</p>
       </div>
 
       {entries.length === 0 ? (
         <div className="card-glass rounded-2xl p-10 text-center relative z-10">
           <BarChart3 className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
-          <p className="text-muted-foreground font-medium">No hay estadísticas aún</p>
-          <p className="text-xs text-muted-foreground mt-1">Jugá una partida para empezar</p>
+          <p className="text-muted-foreground font-medium">{t('no_stats')}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('play_to_start')}</p>
         </div>
       ) : (
         <div className="relative z-10 space-y-6">
@@ -54,31 +56,31 @@ export const StatsPanel = () => {
                       {i === 0 && <Trophy className="w-4 h-4 text-primary" />}
                       <span className="font-semibold text-sm">{name}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground font-medium">{winRate}% victorias</span>
+                    <span className="text-xs text-muted-foreground font-medium">{winRate}% {t('wins_pct')}</span>
                   </div>
                   <div className="grid grid-cols-4 gap-2 text-center text-xs">
                     <div className="p-2 rounded-xl bg-secondary/30">
-                      <p className="text-muted-foreground text-[10px] uppercase tracking-wider">Partidas</p>
+                      <p className="text-muted-foreground text-[10px] uppercase tracking-wider">{t('games')}</p>
                       <p className="text-lg font-display font-bold">{s.totalGames}</p>
                     </div>
                     <div className="p-2 rounded-xl bg-civil/10">
                       <div className="flex items-center justify-center gap-1 text-civil">
                         <Shield className="w-3 h-3" />
-                        <span className="text-[10px]">Civil</span>
+                        <span className="text-[10px]">{t('civil')}</span>
                       </div>
                       <p className="text-lg font-display font-bold text-civil">{s.winsAsCivil}</p>
                     </div>
                     <div className="p-2 rounded-xl bg-impostor/10">
                       <div className="flex items-center justify-center gap-1 text-impostor">
                         <Skull className="w-3 h-3" />
-                        <span className="text-[10px]">Imp.</span>
+                        <span className="text-[10px]">{t('imp')}</span>
                       </div>
                       <p className="text-lg font-display font-bold text-impostor">{s.winsAsImpostor}</p>
                     </div>
                     <div className="p-2 rounded-xl bg-warning/10">
                       <div className="flex items-center justify-center gap-1 text-warning">
                         <Eye className="w-3 h-3" />
-                        <span className="text-[10px]">Falso</span>
+                        <span className="text-[10px]">{t('false_label')}</span>
                       </div>
                       <p className="text-lg font-display font-bold text-warning">{s.winsAsFalseImpostor}</p>
                     </div>
@@ -88,7 +90,7 @@ export const StatsPanel = () => {
             })}
           </div>
           <Button variant="ghost" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl" onClick={handleClear}>
-            <Trash2 className="w-4 h-4 mr-2" />Borrar estadísticas
+            <Trash2 className="w-4 h-4 mr-2" />{t('clear_stats')}
           </Button>
         </div>
       )}

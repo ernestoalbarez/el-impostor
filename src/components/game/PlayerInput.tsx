@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, UserPlus, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface PlayerInputProps {
   players: string[];
@@ -18,6 +19,7 @@ export const PlayerInput = ({
   onRemovePlayer, 
   minPlayers = 3 
 }: PlayerInputProps) => {
+  const { t } = useLanguage();
   const [newPlayer, setNewPlayer] = useState('');
 
   const handleAddPlayer = () => {
@@ -36,8 +38,8 @@ export const PlayerInput = ({
       <div className="flex items-center gap-2 text-muted-foreground">
         <Users className="w-5 h-5" />
         <span className="text-sm font-medium">
-          {players.length} jugador{players.length !== 1 ? 'es' : ''} 
-          {players.length < minPlayers && <span className="text-xs ml-1 text-muted-foreground/70">(mínimo {minPlayers})</span>}
+          {players.length} {t('players_count')}{' '}
+          {players.length < minPlayers && <span className="text-xs ml-1 text-muted-foreground/70">({t('players_min')} {minPlayers})</span>}
         </span>
       </div>
 
@@ -46,7 +48,7 @@ export const PlayerInput = ({
           value={newPlayer}
           onChange={(e) => setNewPlayer(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder="Nombre del jugador"
+          placeholder={t('player_name_placeholder')}
           className="flex-1 bg-secondary/30 border-border/30 focus:border-primary/50 rounded-xl h-11"
         />
         <Button

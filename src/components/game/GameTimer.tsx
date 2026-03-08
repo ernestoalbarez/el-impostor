@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Timer, Pause, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface GameTimerProps {
   initialTime: number;
@@ -17,6 +18,7 @@ export const GameTimer = ({
   onTimeUpdate,
   isPaused: externalPaused 
 }: GameTimerProps) => {
+  const { t } = useLanguage();
   const [isPaused, setIsPaused] = useState(externalPaused ?? false);
   const startTimestampRef = useRef<number>(Date.now());
   const pausedAtRef = useRef<number>(0);
@@ -34,19 +36,16 @@ export const GameTimer = ({
 
   const [timeRemaining, setTimeRemaining] = useState(initialTime);
 
-  // Handle pause/resume
   useEffect(() => {
     if (isPaused) {
       pausedAtRef.current = getElapsed();
     } else {
-      // Resuming: adjust total paused time
       const now = Date.now();
       const elapsedSincePause = Math.floor((now - startTimestampRef.current - totalPausedRef.current) / 1000);
       totalPausedRef.current += (elapsedSincePause - pausedAtRef.current) * 1000;
     }
   }, [isPaused]);
 
-  // Visibility change handler — recalculate on tab focus
   useEffect(() => {
     const handler = () => {
       if (document.visibilityState === 'visible' && !isPaused) {
@@ -63,7 +62,6 @@ export const GameTimer = ({
     return () => document.removeEventListener('visibilitychange', handler);
   }, [isPaused, getRemaining, onTimeUp, onTimeUpdate]);
 
-  // Main tick
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
@@ -95,7 +93,7 @@ export const GameTimer = ({
             isLowTime ? 'text-warning' : 'text-muted-foreground'
           )} />
           <span className="text-sm text-foreground/60 uppercase tracking-widest font-semibold">
-            Tiempo restante
+            {t('time_remaining')}
           </span>
         </div>
         <Button
@@ -139,7 +137,7 @@ export const GameTimer = ({
           animate={{ opacity: 1 }}
           className="text-center text-xs text-muted-foreground uppercase tracking-widest"
         >
-          Partida pausada
+          {t('game_paused')}
         </motion.p>
       )}
     </div>
