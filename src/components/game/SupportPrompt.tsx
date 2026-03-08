@@ -2,8 +2,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSupportPrompt } from '@/hooks/useSupportPrompt';
+import { useLanguage } from '@/context/LanguageContext';
 
 export const SupportPrompt = () => {
+    const { t } = useLanguage();
     const { shouldShow, handleSupport, handleLater, handleNeverShowAgain } = useSupportPrompt();
 
     return (
@@ -16,7 +18,6 @@ export const SupportPrompt = () => {
                     className="w-full"
                 >
                     <div className="card-glass border-2 border-primary/20 p-6 rounded-2xl relative overflow-hidden">
-                        {/* Decoration */}
                         <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
                         <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-accent/10 rounded-full blur-2xl" />
 
@@ -26,9 +27,9 @@ export const SupportPrompt = () => {
                                     <Heart className="w-6 h-6 text-primary animate-pulse" />
                                 </div>
                                 <div className="space-y-1">
-                                    <h3 className="font-display font-bold text-lg">¿Te gusta el juego?</h3>
+                                    <h3 className="font-display font-bold text-lg">{t('like_the_game')}</h3>
                                     <p className="text-sm text-muted-foreground leading-relaxed">
-                                        Si disfrutás el juego, podés ayudarnos a mantenerlo sin publicidad y seguir sumando contenido.
+                                        {t('support_desc')}
                                     </p>
                                 </div>
                             </div>
@@ -38,7 +39,7 @@ export const SupportPrompt = () => {
                                     onClick={handleSupport}
                                     className="w-full btn-fire rounded-xl h-11"
                                 >
-                                    Apoyar proyecto
+                                    {t('support_project')}
                                 </Button>
                                 <div className="flex items-center gap-2">
                                     <Button
@@ -46,13 +47,13 @@ export const SupportPrompt = () => {
                                         onClick={handleLater}
                                         className="flex-1 rounded-xl h-10 hover:bg-secondary/50 text-sm"
                                     >
-                                        Más tarde
+                                        {t('later')}
                                     </Button>
                                     <button
                                         onClick={handleNeverShowAgain}
                                         className="text-[10px] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2 px-2"
                                     >
-                                        No volver a mostrar
+                                        {t('never_show')}
                                     </button>
                                 </div>
                             </div>
