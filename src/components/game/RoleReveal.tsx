@@ -4,13 +4,24 @@ import { Button } from '@/components/ui/button';
 import { Player, RoleType } from '@/types/game';
 import { BackgroundEffects } from './BackgroundEffects';
 import { cn } from '@/lib/utils';
-import { Eye, EyeOff, ArrowLeft, Play } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Play, RotateCcw } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface RoleRevealProps {
   players: Player[];
   revealedPlayerIds: Set<string>;
   onRevealPlayer: (playerId: string) => void;
   onStartGame: () => void;
+  onRestartRound?: () => void;
   hideRoles?: boolean;
 }
 
@@ -26,8 +37,9 @@ const roleDescriptions: Record<RoleType, string> = {
   falseImpostor: 'Encuentra a los impostores (NO sos impostor)',
 };
 
-export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStartGame, hideRoles = false }: RoleRevealProps) => {
+export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStartGame, onRestartRound, hideRoles = false }: RoleRevealProps) => {
   const [viewingPlayer, setViewingPlayer] = useState<Player | null>(null);
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false);
   const allRevealed = revealedPlayerIds.size === players.length;
 
   const handlePlayerClick = (player: Player) => {
@@ -122,8 +134,8 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
                 className={cn(
                   'w-full p-4 rounded-xl border text-left transition-all duration-300 flex items-center justify-between',
                   revealed
-                    ? 'opacity-30 border-border/20 bg-secondary/10 cursor-default'
-                    : 'border-primary/20 bg-secondary/20 hover:border-primary/50 hover:bg-secondary/40 cursor-pointer backdrop-blur-sm'
+                    ? 'opacity-30 border-border/20 bg-secondary/20 cursor-default'
+                    : 'border-primary/20 bg-secondary/50 hover:border-primary/50 hover:bg-secondary/70 cursor-pointer backdrop-blur-sm'
                 )}
               >
                 <span className={cn('font-medium text-lg', revealed ? 'text-muted-foreground line-through' : 'text-foreground')}>{player.name}</span>
@@ -139,7 +151,40 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
             </Button>
           </motion.div>
         )}
+        {onRestartRound && (
+          <Button
+            variant="ghost"
+            onClick={() => setShowRestartConfirm(true)}
+            className="w-full rounded-xl h-10 text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Reiniciar ronda
+          </Button>
+        )}
       </motion.div>
+
+      {onRestartRound && (
+        <AlertDialog open={showRestartConfirm} onOpenChange={setShowRestartConfirm}>
+          <AlertDialogContent className="card-glass border-border/30 rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-2xl font-display font-extrabold">
+                ¿Reiniciar ronda?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-muted-foreground">
+                Se reasignarán roles, palabras y se reiniciará el timer. Las estadísticas y el historial se mantienen.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={() => { setShowRestartConfirm(false); onRestartRound(); }} className="btn-fire rounded-xl">
+                Reiniciar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 };
