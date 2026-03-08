@@ -37,8 +37,9 @@ const roleDescriptions: Record<RoleType, string> = {
   falseImpostor: 'Encuentra a los impostores (NO sos impostor)',
 };
 
-export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStartGame, hideRoles = false }: RoleRevealProps) => {
+export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStartGame, onRestartRound, hideRoles = false }: RoleRevealProps) => {
   const [viewingPlayer, setViewingPlayer] = useState<Player | null>(null);
+  const [showRestartConfirm, setShowRestartConfirm] = useState(false);
   const allRevealed = revealedPlayerIds.size === players.length;
 
   const handlePlayerClick = (player: Player) => {
