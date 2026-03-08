@@ -134,8 +134,8 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
                 className={cn(
                   'w-full p-4 rounded-xl border text-left transition-all duration-300 flex items-center justify-between',
                   revealed
-                    ? 'opacity-30 border-border/20 bg-secondary/10 cursor-default'
-                    : 'border-primary/20 bg-secondary/20 hover:border-primary/50 hover:bg-secondary/40 cursor-pointer backdrop-blur-sm'
+                    ? 'opacity-30 border-border/20 bg-secondary/20 cursor-default'
+                    : 'border-primary/20 bg-secondary/50 hover:border-primary/50 hover:bg-secondary/70 cursor-pointer backdrop-blur-sm'
                 )}
               >
                 <span className={cn('font-medium text-lg', revealed ? 'text-muted-foreground line-through' : 'text-foreground')}>{player.name}</span>
