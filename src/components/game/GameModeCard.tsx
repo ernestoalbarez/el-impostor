@@ -49,7 +49,7 @@ export const GameModeCard = ({ mode, title, description, onClick, isSelected }: 
       whileHover={{ scale: 1.015, y: -2 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
-        'w-full p-5 rounded-2xl border bg-secondary/20 backdrop-blur-sm transition-all duration-300',
+        'w-full p-5 rounded-2xl border bg-secondary/60 backdrop-blur-sm transition-all duration-300',
         'text-left group',
         style.border,
         style.glow,

@@ -4,6 +4,7 @@ import { Player } from '@/types/game';
 import { BackgroundEffects } from './BackgroundEffects';
 import { cn } from '@/lib/utils';
 import { Skull, ShieldCheck, ArrowRight, Trophy } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface EliminationResultProps {
   player: Player;
@@ -20,6 +21,8 @@ export const EliminationResult = ({
   civilsWin,
   onContinue,
 }: EliminationResultProps) => {
+  const { t } = useLanguage();
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -54,7 +57,7 @@ export const EliminationResult = ({
             {player.name}
           </h2>
           <p className={cn('text-2xl font-display font-bold', isImpostor ? 'text-impostor' : 'text-civil')}>
-            {isImpostor ? '¡Impostor eliminado!' : 'Civil eliminado'}
+            {isImpostor ? t('impostor_eliminated') : t('civil_eliminated')}
           </p>
         </motion.div>
 
@@ -70,13 +73,13 @@ export const EliminationResult = ({
           >
             <Trophy className={cn('w-12 h-12 mx-auto mb-4', civilsWin ? 'text-civil' : 'text-impostor')} />
             <h3 className={cn('text-3xl font-display font-extrabold', civilsWin ? 'text-civil' : 'text-impostor')}>
-              {civilsWin ? '¡Civiles ganan!' : '¡Impostores ganan!'}
+              {civilsWin ? t('civils_win') : t('impostors_win')}
             </h3>
           </motion.div>
         )}
 
         <Button onClick={onContinue} size="lg" className="btn-fire px-10 rounded-xl h-12">
-          {gameOver ? 'Ver resultados' : 'Continuar partida'}
+          {gameOver ? t('see_results') : t('continue_game')}
           <ArrowRight className="w-5 h-5 ml-2" />
         </Button>
       </div>

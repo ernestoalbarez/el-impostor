@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Player } from '@/types/game';
 import { cn } from '@/lib/utils';
 import { UserX, AlertTriangle, Check } from 'lucide-react';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,7 @@ interface VotingPanelProps {
 }
 
 export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
+  const { t } = useLanguage();
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -48,7 +50,7 @@ export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-muted-foreground mb-4">
         <UserX className="w-5 h-5" />
-        <span className="text-sm uppercase tracking-widest font-medium">Votación</span>
+        <span className="text-sm uppercase tracking-widest font-medium">{t('voting')}</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
@@ -87,25 +89,25 @@ export const VotingPanel = ({ players, onEliminate }: VotingPanelProps) => {
         size="lg"
       >
         <AlertTriangle className="w-5 h-5 mr-2" />
-        Eliminar a {selectedPlayer?.name || '...'}
+        {t('eliminate_player')} {selectedPlayer?.name || '...'}
       </Button>
 
       <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
         <AlertDialogContent className="card-glass border-impostor/30 rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-2xl font-display font-extrabold">
-              ¿Eliminar a {selectedPlayer?.name}?
+              {t('eliminate_confirm_title', { name: selectedPlayer?.name || '' })}
             </AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
-              Esta acción no se puede deshacer. El jugador será eliminado de la partida.
+              {t('eliminate_confirm_desc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
-              Cancelar
+              {t('cancel')}
             </AlertDialogCancel>
             <AlertDialogAction onClick={confirmElimination} className="btn-fire rounded-xl">
-              Confirmar eliminación
+              {t('confirm_elimination')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
