@@ -226,6 +226,7 @@ const GameApp = () => {
           revealedPlayerIds={revealedPlayerIds}
           onRevealPlayer={revealPlayer}
           onStartGame={() => startGame()}
+          onRestartRound={restartRound}
           hideRoles={hideRoles}
         />
       );

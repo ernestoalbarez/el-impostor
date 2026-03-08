@@ -151,7 +151,40 @@ export const RoleReveal = ({ players, revealedPlayerIds, onRevealPlayer, onStart
             </Button>
           </motion.div>
         )}
+        {onRestartRound && (
+          <Button
+            variant="ghost"
+            onClick={() => setShowRestartConfirm(true)}
+            className="w-full rounded-xl h-10 text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+          >
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Reiniciar ronda
+          </Button>
+        )}
       </motion.div>
+
+      {onRestartRound && (
+        <AlertDialog open={showRestartConfirm} onOpenChange={setShowRestartConfirm}>
+          <AlertDialogContent className="card-glass border-border/30 rounded-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-2xl font-display font-extrabold">
+                ¿Reiniciar ronda?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-muted-foreground">
+                Se reasignarán roles, palabras y se reiniciará el timer. Las estadísticas y el historial se mantienen.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-secondary hover:bg-secondary/80 rounded-xl">
+                Cancelar
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={() => { setShowRestartConfirm(false); onRestartRound(); }} className="btn-fire rounded-xl">
+                Reiniciar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 };
