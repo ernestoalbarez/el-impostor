@@ -4,13 +4,24 @@ import { Button } from '@/components/ui/button';
 import { Player, RoleType } from '@/types/game';
 import { BackgroundEffects } from './BackgroundEffects';
 import { cn } from '@/lib/utils';
-import { Eye, EyeOff, ArrowLeft, Play } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Play, RotateCcw } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface RoleRevealProps {
   players: Player[];
   revealedPlayerIds: Set<string>;
   onRevealPlayer: (playerId: string) => void;
   onStartGame: () => void;
+  onRestartRound?: () => void;
   hideRoles?: boolean;
 }
 
